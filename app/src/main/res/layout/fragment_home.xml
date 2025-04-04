@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".home"
+    android:padding="7dp"
     android:orientation="vertical"
     android:background="@color/background_dark">
     <ScrollView
