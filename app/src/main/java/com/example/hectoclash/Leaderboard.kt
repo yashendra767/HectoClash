@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 
 
@@ -46,25 +47,24 @@ class Leaderboard : Fragment() {
 
         val adapter = object : ArrayAdapter<String>(
             requireContext(),
-            android.R.layout.simple_spinner_item,
+            R.layout.spinner_item_white, // custom layout for selected item
             items
         ) {
             override fun isEnabled(position: Int): Boolean {
-                return position != 0
+                return position != 0 // disable the hint item
             }
 
             override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-                val view = super.getDropDownView(position, convertView, parent)
-                val textView = view as android.widget.TextView
+                val view = super.getDropDownView(position, convertView, parent) as TextView
+                view.setTextColor(Color.WHITE)
                 if (position == 0) {
-                    textView.setTextColor(Color.GRAY)
-                } else {
-                    textView.setTextColor(Color.BLACK)
+                    view.setTextColor(Color.GRAY)
                 }
                 return view
             }
         }
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        adapter.setDropDownViewResource(R.layout.spinner_item_white)
         spinner.adapter = adapter
 
         spinner.setSelection(0, false) // show hint initially
