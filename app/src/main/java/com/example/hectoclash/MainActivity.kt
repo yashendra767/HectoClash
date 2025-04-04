@@ -22,8 +22,8 @@ class MainActivity : AppCompatActivity() {
 
         val bottomView = findViewById<BottomNavigationView>(R.id.bottomNavView)
         replaceTheFragment(home())
-        bottomView.setOnItemSelectedListener{
-            when(it.itemId){
+        bottomView.setOnItemSelectedListener {
+            when (it.itemId) {
                 R.id.item1 -> replaceTheFragment(home())
                 R.id.item2 -> replaceTheFragment(Leaderboard())
                 R.id.item3 -> replaceTheFragment(More())
@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
     fun replaceTheFragment(fragment: Fragment) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
@@ -39,4 +40,8 @@ class MainActivity : AppCompatActivity() {
         fragmentTransaction.commit()
 
     }
+<<<<<<< HEAD
     }
+=======
+}
+>>>>>>> 0b175548bf3f88cf8534d161f0ba72326b69acfa
