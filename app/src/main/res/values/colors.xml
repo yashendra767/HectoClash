@@ -7,7 +7,7 @@
 
     <!-- Backgrounds -->
     <color name="background_light">#FFFFFFFF</color>
-    <color name="background_dark">#121212</color>
+    <color name="background_dark">#1B1B1B</color>
 
     <!-- Text -->
     <color name="text_primary_light">#212121</color>
