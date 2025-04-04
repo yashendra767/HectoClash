@@ -1,0 +1,1 @@
+class SequenceData : ArrayList<SequenceDataItem>()

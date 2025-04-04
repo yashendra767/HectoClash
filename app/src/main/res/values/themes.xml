@@ -6,6 +6,7 @@
     </style>
 
     <style name="Theme.HectoClash" parent="Base.Theme.HectoClash" />
+
     <style name="BottomNavThem" parent="Theme.MaterialComponents.BottomSheetDialog">
         <item name="colorPrimary">@color/blue_primary</item>
     </style>
