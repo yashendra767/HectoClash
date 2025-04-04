@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Core Colors -->
+    <color name="blue_primary">#2196F3</color> <!-- Light Blue -->
+    <color name="blue_primary_dark">#1565C0</color> <!-- Darker Blue -->
+    <color name="blue_accent">#448AFF</color>
+
+    <!-- Backgrounds -->
+    <color name="background_light">#FFFFFFFF</color>
+    <color name="background_dark">#121212</color>
+
+    <!-- Text -->
+    <color name="text_primary_light">#212121</color>
+    <color name="text_secondary_light">#757575</color>
+    <color name="text_primary_dark">#FFFFFF</color>
+    <color name="text_secondary_dark">#BDBDBD</color>
+
+    <!-- Buttons -->
+    <color name="button_blue">#1E88E5</color>
+    <color name="button_blue_dark">#0D47A1</color>
+
+    <!-- Status / Other UI Elements -->
+    <color name="divider">#BDBDBD</color>
+    <color name="surface_dark">#1E1E1E</color>
+    <color name="surface_light">#F5F5F5</color>
+
+    <!-- Defaults -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>
