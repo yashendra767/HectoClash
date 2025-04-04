@@ -7,7 +7,7 @@
     android:background="@color/background_dark"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Login.Login">
+    tools:context=".Login.GetStarted">
 
 
     <ImageView
@@ -63,6 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="Get Started"
+            android:id="@+id/getStarted"
             android:textStyle="bold"
             android:textSize="30dp"
             android:textColor="@color/white"
@@ -86,7 +87,6 @@
         android:id="@+id/google"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-
         android:backgroundTint="#6C6EF3"
         android:textAlignment="center"
         android:layout_marginHorizontal="15dp"
@@ -116,8 +116,6 @@
                 android:textColor="@color/white"
                 android:layout_gravity="center"
                 android:gravity="center|right"/>
-
-
 
         </LinearLayout>
 

@@ -24,18 +24,11 @@
             android:theme="@style/Theme.HectoClash" />
         <activity
             android:name=".SplashScreen"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="false">
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
-            android:name=".chat.chat"
-            android:exported="false" />
-        <activity
-            android:name=".Login.Login"
+            android:name=".Login.GetStarted"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

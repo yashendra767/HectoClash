@@ -40,8 +40,6 @@ class MainActivity : AppCompatActivity() {
         fragmentTransaction.commit()
 
     }
-<<<<<<< HEAD
-    }
-=======
 }
->>>>>>> 0b175548bf3f88cf8534d161f0ba72326b69acfa
+
+
