@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.hectoclash"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.hectoclash"
@@ -45,4 +45,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    //circle image
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
 }
