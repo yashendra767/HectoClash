@@ -1,10 +1,257 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/surface_dark"
     tools:context=".LevelDetailActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Header Image -->
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/img4"
+        android:layout_gravity="center_horizontal"/>
+
+    <!-- Timer Text -->
+    <TextView
+        android:id="@+id/timerTextlevel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:drawableStart="@drawable/baseline_timer_24"
+        android:textColor="@color/white"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:text="02:00" />
+
+    <!-- Level Info Card -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:gravity="center">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:backgroundTint="@color/background_dark"
+            android:background="@drawable/border"
+            app:cardCornerRadius="20dp"
+            android:layout_margin="15dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView10"
+                    android:layout_width="117dp"
+                    android:layout_height="49dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="43dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="-1dp"
+                    android:layout_toStartOf="@+id/levelgame_levelno"
+                    android:fontFamily="@font/bakbak_one"
+                    android:gravity="center"
+                    android:text="Level"
+                    android:textColor="#2A60BC"
+                    android:textSize="35dp" />
+
+                <TextView
+                    android:id="@+id/levelgame_levelno"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="9dp"
+                    android:fontFamily="@font/bakbak_one"
+                    android:text="1"
+                    android:textColor="#2A60BC"
+                    android:textSize="35dp" />
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginBottom="4dp"
+                    app:srcCompat="@drawable/baseline_grade_24" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+    <!-- Sequence Display -->
+    <TextView
+        android:id="@+id/sequence"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hecto Sequence: \n"
+        android:layout_gravity="center_horizontal"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:paddingBottom="15dp"
+        android:textColor="@android:color/white" />
+
+    <!-- Solution Container inside Horizontal Scroll -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/solutioncontainer_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:gravity="center" />
+    </HorizontalScrollView>
+
+    <!-- Reset Button -->
+    <ImageView
+        android:id="@+id/resetbtn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="end"
+        android:layout_marginRight="25dp"
+        android:src="@drawable/reset" />
+
+    <!-- Operator Buttons -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="20dp"
+        android:backgroundTint="@color/black"
+        android:layout_marginTop="20dp"
+        android:layout_marginHorizontal="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardAdd"
+                    android:layout_width="130dp"
+                    android:layout_height="75dp"
+                    android:backgroundTint="@color/surface_dark"
+                    app:cardCornerRadius="16dp"
+                    android:layout_marginLeft="20dp"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="➕"
+                        android:textSize="45dp"
+                        android:layout_gravity="center"
+                        android:clickable="false"
+                        android:focusable="false" />
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardSubtract"
+                    android:layout_width="130dp"
+                    android:layout_height="75dp"
+                    android:backgroundTint="@color/surface_dark"
+                    app:cardCornerRadius="16dp"
+                    android:layout_margin="15dp"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="➖"
+                        android:textSize="45dp"
+                        android:layout_gravity="center"
+                        android:clickable="false"
+                        android:focusable="false" />
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardMultiply"
+                    android:layout_width="130dp"
+                    android:layout_height="75dp"
+                    android:backgroundTint="@color/surface_dark"
+                    app:cardCornerRadius="16dp"
+                    android:layout_marginLeft="20dp"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="❌"
+                        android:textSize="45dp"
+                        android:layout_gravity="center"
+                        android:clickable="false"
+                        android:focusable="false" />
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardDivide"
+                    android:layout_width="130dp"
+                    android:layout_height="75dp"
+                    android:backgroundTint="@color/surface_dark"
+                    app:cardCornerRadius="16dp"
+                    android:layout_margin="15dp"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="➗"
+                        android:textSize="45dp"
+                        android:layout_gravity="center"
+                        android:clickable="false"
+                        android:focusable="false" />
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Submit Button -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/btnsubmit_level"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="40dp"
+        app:cardBackgroundColor="@color/blue_primary"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:text="Submit"
+            android:textColor="@color/background_light"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+    </androidx.cardview.widget.CardView>
+</LinearLayout>
