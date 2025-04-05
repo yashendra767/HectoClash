@@ -18,7 +18,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.example.hectoclash.R
+import com.example.hectoclash.dataclass.GameData
 import com.example.hectoclash.dataclass.HectoQuestion
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.InputStreamReader
@@ -73,8 +78,49 @@ class GameInterface : AppCompatActivity() {
             insertOperatorIntoFocusedField("/")
         }
 
-        loadRandomSequence()
-        startGameTimer()
+
+        val gameId = intent.getStringExtra("gameId") ?: return
+
+        val gameRef = FirebaseDatabase.getInstance().reference.child("games").child(gameId)
+        gameRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val game = snapshot.getValue(GameData::class.java)
+
+                if (game?.status == "active") {
+                    val startTime = game.startTime ?: System.currentTimeMillis()
+                    val timeElapsed = System.currentTimeMillis() - startTime
+                    val remainingTime = gameDuration - timeElapsed
+
+                    // Load question from Firebase instead of random
+                    game.question?.let { displayEditableSolution(it.solution.toString()) }
+                    correctOperatorSequence = (game.question?.operator_sequence ?: startGameTimer(remainingTime)) as List<String>
+                }
+
+            }
+
+            override fun onCancelled(error: DatabaseError){}
+        })
+        if (gameId.isEmpty()) {
+            // If gameId is not passed, fallback to local mode (single player or testing)
+            loadRandomSequence()
+            startGameTimer(gameDuration)
+        }
+
+    }
+
+    private fun startGameTimer(remainingTime: Long) {
+        timer = object : CountDownTimer(remainingTime, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val minutes = millisUntilFinished / 60000
+                val seconds = (millisUntilFinished % 60000) / 1000
+                timerTextView.text = String.format("Time Left: %02d:%02d", minutes, seconds)
+            }
+
+            override fun onFinish() {
+                timerTextView.text = "Time's Up!"
+                checkSolution()
+            }
+            }.start()
     }
 
     private fun checkSolution() {
@@ -101,20 +147,7 @@ class GameInterface : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun startGameTimer() {
-        timer = object : CountDownTimer(gameDuration, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                val minutes = millisUntilFinished / 60000
-                val seconds = (millisUntilFinished % 60000) / 1000
-                timerTextView.text = String.format("Time Left: %02d:%02d", minutes, seconds)
-            }
 
-            override fun onFinish() {
-                timerTextView.text = "Time's Up!"
-                checkSolution() // Auto-submit when time runs out
-            }
-        }.start()
-    }
 
 
     private fun evaluateUserInput() {
