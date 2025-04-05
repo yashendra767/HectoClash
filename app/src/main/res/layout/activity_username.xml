@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:text="Create Account"
             android:textStyle="bold"
-            android:textSize="30dp"
+            android:textSize="30sp"
             android:fontFamily="@font/itim"
             android:id="@+id/createAccount"
             android:textColor="@color/white"

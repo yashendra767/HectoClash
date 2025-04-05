@@ -50,23 +50,18 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.database)
-    implementation(libs.firebase.crashlytics.buildtools)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation ("de.hdodenhof:circleimageview:3.1.0")
-
-    //firbase
     // Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.12.0"))
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-database-ktx")
     implementation ("com.google.firebase:firebase-messaging")
+    implementation ("com.squareup.okhttp3:okhttp:4.12.0")
+
 //googleauth
     implementation ("com.google.android.gms:play-services-auth:21.3.0")
-
-    //json file
-    implementation("com.google.code.gson:gson:2.10.1")
-
-
+    implementation("com.google.code.gson:gson:2.8.8")
 }

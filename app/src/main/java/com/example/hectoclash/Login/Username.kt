@@ -71,7 +71,7 @@ class Username : AppCompatActivity() {
     private fun saveToSharedPreferences(heptoName: String) {
         val sharedPref = getSharedPreferences("HectoClashPrefs", Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
-            putString("user_heptoName", heptoName)
+            putString("heptoname", heptoName)
             apply()
         }
         Log.d("SharedPrefs", "HeptoName saved in SharedPreferences")

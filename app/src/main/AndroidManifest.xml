@@ -23,13 +23,7 @@
             android:exported="false" />
         <activity
             android:name=".Hectolevel"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".Login.Username"
             android:exported="false" />
@@ -43,14 +37,30 @@
         <activity
             android:name=".SplashScreen"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".Login.GetStarted"
             android:exported="false" />
         <activity
+            android:name=".Gamemode.PlayOnline"
+            android:exported="false" />
+        <activity
+            android:name=".Gamemode.GameInterface"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
-            android:exported="false"/>
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-        </application>
-    </manifest>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
 
+</manifest>
