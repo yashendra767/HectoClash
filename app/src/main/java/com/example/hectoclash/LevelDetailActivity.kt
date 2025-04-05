@@ -44,6 +44,7 @@ class LevelDetailActivity : AppCompatActivity() {
         val solnOfSeq = intent.getStringExtra("Soln_of_seq")
         val solnOperatorSeq = intent.getStringArrayListExtra("soln_operator_seq") ?: arrayListOf()
 
+        Log.d("LevelDetail", "onCreate: Clicked Level = $clickedLevel")
         levelNumberTextView.text = clickedLevel.toString()
         sequenceTextView.text = "Hecto Sequence: ${seqData ?: ""}"
         correctOperatorSequence = solnOperatorSeq
@@ -177,12 +178,14 @@ class LevelDetailActivity : AppCompatActivity() {
     }
 
     private fun unlockAndReturn() {
-        val uid = auth.currentUser?.email ?: return
+        val uid = auth.currentUser?.email.toString().replace(".",",") ?: return
         val nextLevel = clickedLevel + 1
+        Log.d("LevelDetail", "unlockAndReturn: Current Level = $clickedLevel, Next Level to unlock = $nextLevel")
 
         firestore.collection("users").document(uid)
             .update("unlockedLevel", nextLevel)
             .addOnSuccessListener {
+                Log.d("LevelDetail", "Firestore update success. Unlocked level: $nextLevel")
                 val intent = Intent().apply {
                     putExtra("unlockedLevel", nextLevel)
                 }

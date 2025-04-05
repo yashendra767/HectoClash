@@ -39,11 +39,12 @@ class Hectolevel : AppCompatActivity() {
         sequenceDataList = loadSequenceData()
 
         val currentUser = auth.currentUser
-        val uid = currentUser?.uid ?: return
+        val uid = currentUser?.email.toString().replace(".",",") ?: return
 
         firestore.collection("users").document(uid).get()
             .addOnSuccessListener { document ->
                 unlockedLevel = document.getLong("unlockedLevel")?.toInt() ?: 1
+                Log.d("Hectolevel", "Initial unlocked level fetched: $unlockedLevel")
                 levelAdapter = LevelAdapter(this, numberList, sequenceDataList, unlockedLevel)
                 recyclerView.adapter = levelAdapter
             }
@@ -56,11 +57,19 @@ class Hectolevel : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1001 && resultCode == Activity.RESULT_OK) {
             val newLevel = data?.getIntExtra("unlockedLevel", unlockedLevel) ?: unlockedLevel
+            Log.d("Hectolevel", "onActivityResult: Received newLevel = $newLevel, Current unlockedLevel = $unlockedLevel")
             if (newLevel > unlockedLevel) {
                 unlockedLevel = newLevel
                 levelAdapter.updateUnlockedLevel(unlockedLevel)
                 Toast.makeText(this, "🎉 Congratulations! Level $unlockedLevel unlocked!", Toast.LENGTH_LONG).show()
+                Log.d("Hectolevel", "Unlocked level updated to: $unlockedLevel")
+            } else {
+                Log.d("Hectolevel", "New level ($newLevel) is not greater than current unlocked level ($unlockedLevel). No update.")
             }
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            Log.d("Hectolevel", "onActivityResult: Activity Result Canceled")
+        } else {
+            Log.w("Hectolevel", "onActivityResult: Unknown requestCode ($requestCode) or resultCode ($resultCode)")
         }
     }
 
