@@ -101,7 +101,7 @@ class LevelDetailActivity : AppCompatActivity() {
     private fun addOperatorInputField(position: Int) {
         val editText = EditText(this).apply {
             hint = "?"
-            textSize = 40f
+            textSize = 30f
             gravity = Gravity.CENTER
             filters = arrayOf(InputFilter.LengthFilter(1))
             inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS

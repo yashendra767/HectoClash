@@ -215,12 +215,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/btnsubmit"
-        app:cardBackgroundColor="@color/blue_primary"
+        app:cardBackgroundColor="#3FA5D3"
         app:cardElevation="5dp"
         android:padding="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_margin="20dp"
         android:layout_marginHorizontal="10dp"
-        app:cardCornerRadius="10dp">
+        app:cardCornerRadius="15dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
