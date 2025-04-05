@@ -54,6 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
+        app:endIconMode="password_toggle"
         app:boxStrokeWidth="3dp"
         app:boxStrokeColor="@color/blue_primary"
         android:layout_marginHorizontal="15dp">

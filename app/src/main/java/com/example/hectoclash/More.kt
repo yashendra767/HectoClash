@@ -26,13 +26,7 @@ class More : Fragment() {
             val intent = Intent(requireContext(), Profile::class.java)
             startActivity(intent)
         }
-
-
-
-
-
-
-        return inflater.inflate(R.layout.fragment_more, container, false)
+        return view
     }
 
 }

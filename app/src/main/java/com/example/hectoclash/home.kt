@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.cardview.widget.CardView
+import com.example.hectoclash.Gamemode.Learn
 import com.example.hectoclash.Gamemode.PlayOnline
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -33,9 +34,14 @@ class home : Fragment() {
         playOnline.setOnClickListener {
             findRandomOpponent()
         }
-
+        val learnHecto = view.findViewById<CardView>(R.id.learnHectoClash)
+        learnHecto.setOnClickListener{
+            val intent = Intent(requireContext(),Learn::class.java)
+            startActivity(intent)
+        }
         return view
     }
+
 
     private fun findRandomOpponent() {
         val currentUserEmail = auth.currentUser?.email?.replace(".", ",") ?: return

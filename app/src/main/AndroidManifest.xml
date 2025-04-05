@@ -22,6 +22,9 @@
             android:name=".LevelDetailActivity"
             android:exported="false" />
         <activity
+            android:name=".Gamemode.Learn"
+            android:exported="false" />
+        <activity
             android:name=".Hectolevel"
             android:exported="false" />
         <activity
