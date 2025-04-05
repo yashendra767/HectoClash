@@ -19,12 +19,23 @@
             android:name=".Hectolevel"
             android:exported="false" />
         <activity
-            android:name=".HectoLevel"
+            android:name=".Login.Username"
+            android:exported="false" />
+        <activity
+            android:name=".Login.SignIn"
+            android:exported="false" />
+        <activity
+            android:name=".Login.CreateAccount"
             android:exported="false"
             android:theme="@style/Theme.HectoClash" />
         <activity
             android:name=".SplashScreen"
-            android:exported="false">
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
 
         </activity>
         <activity
@@ -32,12 +43,8 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="false">
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 
