@@ -43,10 +43,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:fontFamily="@font/actor"
                         android:layout_marginStart="10dp"
                         android:text="Profile"
                         android:textColor="@color/surface_light"
-                        android:textSize="28sp">
+                        android:textSize="23sp">
                     </TextView>
 
                 </LinearLayout>
@@ -82,9 +83,10 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginStart="10dp"
+                        android:fontFamily="@font/actor"
                         android:text="Stats"
                         android:textColor="@color/surface_light"
-                        android:textSize="28sp">
+                        android:textSize="23sp">
                     </TextView>
 
                 </LinearLayout>
@@ -121,8 +123,9 @@
                         android:layout_gravity="center"
                         android:layout_marginStart="10dp"
                         android:text="Friends"
+                        android:fontFamily="@font/actor"
                         android:textColor="@color/surface_light"
-                        android:textSize="28sp">
+                        android:textSize="23sp">
                     </TextView>
 
                 </LinearLayout>
@@ -158,9 +161,10 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginStart="10dp"
+                        android:fontFamily="@font/actor"
                         android:text="Settings"
                         android:textColor="@color/surface_light"
-                        android:textSize="28sp">
+                        android:textSize="23sp">
                     </TextView>
 
                 </LinearLayout>
@@ -197,8 +201,9 @@
                         android:layout_gravity="center"
                         android:layout_marginStart="10dp"
                         android:text="Help"
+                        android:fontFamily="@font/actor"
                         android:textColor="@color/surface_light"
-                        android:textSize="28sp">
+                        android:textSize="23sp">
                     </TextView>
 
                 </LinearLayout>

@@ -6,7 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
-import com.example.hectoclash.Login.Login
+import com.example.hectoclash.Login.GetStarted
 
 class SplashScreen : AppCompatActivity() {
 
@@ -20,7 +20,7 @@ class SplashScreen : AppCompatActivity() {
 
         // Delay before moving to MainActivity (e.g., 4 seconds)
         Handler(Looper.getMainLooper()).postDelayed({
-            startActivity(Intent(this, Login::class.java))
+            startActivity(Intent(this, GetStarted::class.java))
             finish() // Close splash screen
         }, 4000)
     }

@@ -7,9 +7,7 @@
     android:background="@color/background_dark"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Login.Login">
-
-
+    tools:context=".Login.GetStarted">
     <ImageView
 
         android:layout_width="300dp"
@@ -25,8 +23,9 @@
 
     <TextView
         android:layout_width="match_parent"
+        android:fontFamily="@font/actor"
         android:layout_height="wrap_content"
-        android:text="Play Hecto get better  have fun ! 👌"
+        android:text="Play Hecto get better,\nhave fun ! 👌"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="35dp"
@@ -60,14 +59,16 @@
         tools:layout_editor_absoluteX="1dp" >
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Get Started"
-            android:textStyle="bold"
-            android:textSize="30dp"
-            android:textColor="@color/white"
+            android:id="@+id/getStarted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="center"/>
+            android:fontFamily="@font/itim"
+            android:gravity="center"
+            android:text="Get Started"
+            android:textColor="@color/white"
+            android:textSize="30dp"
+            android:textStyle="bold" />
 
 
 
@@ -86,7 +87,6 @@
         android:id="@+id/google"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-
         android:backgroundTint="#6C6EF3"
         android:textAlignment="center"
         android:layout_marginHorizontal="15dp"
@@ -94,25 +94,33 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView5"
         tools:layout_editor_absoluteX="1dp" >
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Continue with Google"
-            android:textStyle="bold"
-            android:textSize="25dp"
-            android:layout_marginRight="30dp"
-            android:textColor="@color/white"
-            android:layout_gravity="center"
-            android:gravity="center|right"/>
-
-        <ImageView
-            android:id="@+id/imageView7"
-            android:layout_width="90dp"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|left"
-            android:layout_marginLeft="10dp"
-            android:layout_margin="8dp"
-            app:srcCompat="@drawable/img3" />
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageView7"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:layout_margin="8dp"
+                app:srcCompat="@drawable/img3" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:fontFamily="@font/itim"
+                android:gravity="center|right"
+                android:text="Continue with Google"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
 
 
 
