@@ -102,13 +102,38 @@
         android:orientation="horizontal"
         android:padding="10dp"
         android:background="@android:color/transparent"/>
+<!--    <androidx.cardview.widget.CardView-->
+<!--        android:id="@+id/resetbtn"-->
+<!--        android:layout_width="50dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:backgroundTint="@color/surface_dark"-->
+<!--        android:layout_gravity="right"-->
+<!--        android:layout_marginRight="40dp"-->
+<!--        app:cardCornerRadius="80dp">-->
+<!--        <ImageView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:src="@drawable/reset"/>-->
+
+
+<!--    </androidx.cardview.widget.CardView>-->
+
+    <ImageView
+        android:id="@+id/resetbtn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="right"
+        android:layout_marginRight="25dp"
+        android:src="@drawable/reset"/>
+
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="20dp"
         android:backgroundTint="@color/black"
-        android:layout_margin="20dp">
+        android:layout_marginTop="20dp"
+        android:layout_marginHorizontal="20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -121,6 +146,7 @@
             android:gravity="center"
             android:orientation="horizontal">
         <androidx.cardview.widget.CardView
+            android:id="@+id/cardAdd"
             android:layout_width="130dp"
             android:layout_height="75dp"
             android:backgroundTint="@color/surface_dark"
@@ -140,6 +166,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/cardSubtract"
             android:layout_width="130dp"
             android:layout_height="75dp"
             android:backgroundTint="@color/surface_dark"
@@ -162,6 +189,7 @@
                 android:gravity="center"
                 android:orientation="horizontal">
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cardMultiply"
                     android:layout_width="130dp"
                     android:layout_height="75dp"
                     android:backgroundTint="@color/surface_dark"
@@ -178,6 +206,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cardDivide"
                     android:layout_width="130dp"
                     android:layout_height="75dp"
                     android:backgroundTint="@color/surface_dark"
@@ -198,12 +227,9 @@
 
         </LinearLayout>
 
-
-
-
-
-
     </androidx.cardview.widget.CardView>
+
+
 
 
 
@@ -214,7 +240,8 @@
         android:id="@+id/btnsubmit"
         app:cardBackgroundColor="@color/blue_primary"
         app:cardElevation="5dp"
-        android:layout_margin="5dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginHorizontal="10dp"
         app:cardCornerRadius="10dp">
         <TextView
             android:layout_width="wrap_content"
