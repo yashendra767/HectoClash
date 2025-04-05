@@ -22,6 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="24sp"
+        android:fontFamily="@font/itim"
         android:drawableStart="@drawable/baseline_timer_24"
         android:textColor="@color/white"
         android:layout_gravity="center_horizontal"
@@ -87,6 +88,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Sequence: "
+        android:fontFamily="@font/actor"
         android:textSize="24sp"
         android:textStyle="bold"
         android:paddingBottom="15dp"
@@ -96,10 +98,10 @@
         android:id="@+id/solutioncontainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
         android:gravity="center"
         android:orientation="horizontal"
-        android:padding="10dp"
-        android:background="@android:color/transparent"/>
+        android:padding="10dp" />
 
 
 

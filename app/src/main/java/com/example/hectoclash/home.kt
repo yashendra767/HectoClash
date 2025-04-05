@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
+import com.example.hectoclash.Gamemode.Learn
 import com.example.hectoclash.Gamemode.PlayOnline
 
 class home : Fragment() {
@@ -39,9 +40,9 @@ class home : Fragment() {
 //            startActivity(Intent(requireContext(), GameRoomsActivity::class.java))
 //        }
 //
-//        learnHectoClash.setOnClickListener {
-//            startActivity(Intent(requireContext(), LearnHectoClashActivity::class.java))
-//        }
+        learnHectoClash.setOnClickListener {
+            startActivity(Intent(requireContext(), Learn::class.java))
+        }
 
         return view
     }
