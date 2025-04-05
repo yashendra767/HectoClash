@@ -61,6 +61,8 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-database-ktx")
     implementation ("com.google.firebase:firebase-messaging")
+    implementation ("com.squareup.okhttp3:okhttp:4.12.0")
+
 //googleauth
     implementation ("com.google.android.gms:play-services-auth:21.3.0")
 

@@ -46,6 +46,7 @@
                 android:layout_gravity="center_horizontal"/>
 
             <TextView
+                android:id="@+id/currentUserNameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Aryan Sharma"
@@ -82,6 +83,7 @@
                 android:layout_gravity="center_horizontal"/>
 
             <TextView
+                android:id="@+id/opponentNameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Aryan Sharma"
