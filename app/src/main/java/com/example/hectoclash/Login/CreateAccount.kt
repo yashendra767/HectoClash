@@ -1,5 +1,6 @@
 package com.example.hectoclash.Login
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -17,6 +18,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
 class CreateAccount : AppCompatActivity() {
+
     private lateinit var auth: FirebaseAuth
     private lateinit var databaseReference: DatabaseReference
 
@@ -45,10 +47,10 @@ class CreateAccount : AppCompatActivity() {
 
         signupContinue.setOnClickListener {
             val email = mailEditText?.text.toString().trim()
-            val pass = passEditText?.text.toString().trim()
+            val password = passEditText?.text.toString().trim()
 
-            if (email.isNotEmpty() && pass.isNotEmpty()) {
-                signupUser(email, pass)
+            if (email.isNotEmpty() && password.isNotEmpty()) {
+                signupUser(email, password)
             } else {
                 Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show()
             }
@@ -61,13 +63,16 @@ class CreateAccount : AppCompatActivity() {
                 if (task.isSuccessful) {
                     val userId = auth.currentUser?.uid
                     val user = User(mail = email, pass = password)
+
                     if (userId != null) {
-                        storeUserInDatabase(email, user) // Use email as key for Realtime Database
+                        storeUserInDatabase(email, user)
+                        saveToSharedPreferences(email)
                     }
+
                     Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show()
 
                     val intent = Intent(this, Username::class.java)
-                    intent.putExtra("mail", email) // Pass the email to the Username activity
+                    intent.putExtra("mail", email)
                     startActivity(intent)
                     finish()
                 } else {
@@ -81,18 +86,28 @@ class CreateAccount : AppCompatActivity() {
     }
 
     private fun storeUserInDatabase(email: String, user: User) {
-        databaseReference.child(email.replace(".", ",")).setValue(user)
+        val key = email.replace(".", ",")
+        databaseReference.child(key).setValue(user)
             .addOnSuccessListener {
                 Log.d("CreateAccount", "User data saved to Realtime Database for email: $email")
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Failed to store user data in Realtime Database", Toast.LENGTH_SHORT).show()
-                Log.e("CreateAccount", "Error storing user data in Realtime Database", e)
+                Log.e("CreateAccount", "Error storing user data", e)
             }
+    }
+
+    private fun saveToSharedPreferences(email: String) {
+        val sharedPref = getSharedPreferences("HectoClashPrefs", Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putString("user_email", email)
+            apply()
+        }
+        Log.d("SharedPrefs", "User email saved in SharedPreferences")
     }
 }
 
-// User data model for Realtime Database
+// User data model
 data class User(
     val mail: String = "",
     val pass: String = ""

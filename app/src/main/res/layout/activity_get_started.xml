@@ -27,6 +27,7 @@
         android:layout_height="wrap_content"
         android:text="Play Hecto get better,\nhave fun ! 👌"
         android:textAlignment="center"
+        android:gravity="center"
         android:textColor="@color/white"
         android:textSize="35dp"
         android:textStyle="bold"
