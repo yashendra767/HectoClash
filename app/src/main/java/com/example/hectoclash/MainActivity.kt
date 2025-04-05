@@ -4,9 +4,12 @@ import android.R.attr.fragment
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
+import android.content.Intent
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import com.example.hectoclash.more.Profile
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -19,7 +22,6 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
         val bottomView = findViewById<BottomNavigationView>(R.id.bottomNavView)
         replaceTheFragment(home())
         bottomView.setOnItemSelectedListener {
@@ -30,9 +32,12 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
-
+        val profileBtn = findViewById<CardView>(R.id.btnProfile)
+        profileBtn.setOnClickListener{
+            val intent = Intent(this, Profile::class.java)
+            startActivity(intent)
+        }
     }
-
     fun replaceTheFragment(fragment: Fragment) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
