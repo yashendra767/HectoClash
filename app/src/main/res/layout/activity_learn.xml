@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/surface_dark"
+    tools:context=".Gamemode.Learn">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Learn to Play"
+        android:fontFamily="@font/itim"
+        android:textColor="@color/surface_light"
+        android:layout_gravity="center"
+        android:textSize="35sp">
+    </TextView>
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textSize="23sp"
+                android:fontFamily="@font/actor"
+                android:textColor="#B5D8DC"
+                android:padding="5dp"
+                android:text="HectoClash is an interactive mental math
+game designed to provide an exciting and
+educational experience. Inspired by the
+Hectoc game format, HectoClash combines
+competitive gameplay with real-time duels,
+challenging players to solve mathematical
+puzzles under time constraints. This app
+is built to engage users, enhance their
+mental math skills, and foster a fun,
+learning-based community.">
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:textColor="@color/surface_light"
+                android:fontFamily="@font/actor"
+                android:padding="7dp"
+                android:textSize="20sp"
+                android:text="When user hits the Play button, a 6 digit sequence gets generated on which user has to perform four operations that are Addition(+), Subtraction(-), Multiplication(*) and Division(/) in order to get a result total of 100. The point scheme is as follows:\n \nRight answer - 50 points Addition\nWrong answer - 20 points deduction\n \n User can play different modes such as Online Player, Custom Rooms, Level Player, Daily Challenges.\n This is a great game to improve Math Skills. ">
+            </TextView>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

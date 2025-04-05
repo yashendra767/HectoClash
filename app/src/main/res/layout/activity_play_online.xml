@@ -19,6 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="25dp"
+        android:fontFamily="@font/actor"
         android:text="Solve the Hecto Sequence "
         android:textColor="@color/white"
         android:layout_gravity="center"/>
@@ -50,6 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Aryan Sharma"
+                android:fontFamily="@font/actor"
                 android:textStyle="bold"
                 android:textColor="@color/white"
                 android:layout_marginTop="50dp"
@@ -88,6 +90,7 @@
                 android:layout_height="wrap_content"
                 android:text="Aryan Sharma"
                 android:textStyle="bold"
+                android:fontFamily="@font/actor"
                 android:textColor="@color/white"
                 android:layout_marginTop="50dp"
                 android:textSize="15dp"
@@ -113,10 +116,11 @@
         tools:layout_editor_absoluteX="1dp" >
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Start game "
         android:textStyle="bold"
+        android:fontFamily="@font/itim"
         android:textSize="30dp"
         android:textColor="@color/white"
         android:layout_gravity="center"
