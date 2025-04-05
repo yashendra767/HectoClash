@@ -44,7 +44,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/loginEmail"
             android:hint="📨  Email"
-            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textSize="20sp"
             android:textColor="@color/white"/>
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -65,7 +66,6 @@
             android:id="@+id/loginPass"
             android:hint="🔑  Password"
             android:textColor="@color/white"
-            android:textStyle="bold"
             android:textSize="20dp"/>
     </com.google.android.material.textfield.TextInputLayout>
 

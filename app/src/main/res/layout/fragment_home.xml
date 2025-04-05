@@ -31,6 +31,7 @@
                     <ImageView
                         android:layout_width="120dp"
                         android:layout_height="120dp"
+                        android:padding="5dp"
                         android:src="@drawable/online">
                     </ImageView>
                     <LinearLayout
@@ -79,6 +80,7 @@
                     android:orientation="horizontal">
                     <ImageView
                         android:layout_width="120dp"
+                        android:padding="5dp"
                         android:layout_height="120dp"
                         android:src="@drawable/levels">
                     </ImageView>
@@ -127,6 +129,7 @@
                     <ImageView
                         android:layout_width="120dp"
                         android:layout_height="120dp"
+                        android:padding="5dp"
                         android:src="@drawable/puzzle">
                     </ImageView>
 
@@ -158,6 +161,7 @@
                     <ImageView
                         android:layout_width="120dp"
                         android:layout_height="120dp"
+                        android:padding="5dp"
                         android:src="@drawable/multiplayer">
                     </ImageView>
 
@@ -206,6 +210,7 @@
                     <ImageView
                         android:layout_width="120dp"
                         android:layout_height="120dp"
+                        android:padding="5dp"
                         android:src="@drawable/learn">
                     </ImageView>
 

@@ -156,14 +156,12 @@
                     android:layout_marginLeft="20dp"
                     android:clickable="true"
                     android:focusable="true">
-                    <TextView
+                    <ImageView
                         android:layout_width="wrap_content"
+                        android:padding="4dp"
                         android:layout_height="wrap_content"
-                        android:text="➕"
-                        android:textSize="45dp"
-                        android:layout_gravity="center"
-                        android:clickable="false"
-                        android:focusable="false" />
+                        android:src="@drawable/plus">
+                    </ImageView>
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
@@ -175,14 +173,12 @@
                     android:layout_margin="15dp"
                     android:clickable="true"
                     android:focusable="true">
-                    <TextView
+                    <ImageView
                         android:layout_width="wrap_content"
+                        android:padding="4dp"
                         android:layout_height="wrap_content"
-                        android:text="➖"
-                        android:textSize="45dp"
-                        android:layout_gravity="center"
-                        android:clickable="false"
-                        android:focusable="false" />
+                        android:src="@drawable/minus">
+                    </ImageView>
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
 
@@ -220,14 +216,12 @@
                     android:layout_margin="15dp"
                     android:clickable="true"
                     android:focusable="true">
-                    <TextView
+                    <ImageView
                         android:layout_width="wrap_content"
+                        android:padding="4dp"
                         android:layout_height="wrap_content"
-                        android:text="➗"
-                        android:textSize="45dp"
-                        android:layout_gravity="center"
-                        android:clickable="false"
-                        android:focusable="false" />
+                        android:src="@drawable/divide">
+                    </ImageView>
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
         </LinearLayout>
@@ -250,6 +244,7 @@
             android:layout_gravity="center"
             android:padding="10dp"
             android:text="Submit"
+            android:fontFamily="@font/itim"
             android:textColor="@color/background_light"
             android:textSize="25sp"
             android:textStyle="bold" />
