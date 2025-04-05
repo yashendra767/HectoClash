@@ -233,9 +233,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="40dp"
-        app:cardBackgroundColor="@color/blue_primary"
-        app:cardCornerRadius="10dp"
+        android:layout_margin="20dp"
+        app:cardBackgroundColor="#3FA5D3"
+        app:cardCornerRadius="15dp"
         app:cardElevation="5dp">
 
         <TextView
