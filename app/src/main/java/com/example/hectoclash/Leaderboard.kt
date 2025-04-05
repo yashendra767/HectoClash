@@ -13,9 +13,6 @@ import android.widget.TextView
 import android.widget.Toast
 
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 
 class Leaderboard : Fragment() {
 
@@ -24,10 +21,6 @@ class Leaderboard : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
@@ -84,17 +77,5 @@ class Leaderboard : Fragment() {
                 TODO("Not yet implemented")
             }
         }
-    }
-
-    companion object {
-
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            Leaderboard().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }

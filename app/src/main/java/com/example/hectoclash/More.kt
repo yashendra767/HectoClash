@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.cardview.widget.CardView
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.example.hectoclash.more.Profile
 
 
@@ -24,6 +25,14 @@ class More : Fragment() {
         val btnProfile = view.findViewById<CardView>(R.id.moreProfile)
         btnProfile.setOnClickListener{
             val intent = Intent(requireContext(), Profile::class.java)
+            startActivity(intent)
+        }
+
+        val help = view.findViewById<CardView>(R.id.moreHelp)
+        help.setOnClickListener{
+            val url = "http://hectoc.org/"  // Replace with your desired URL
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = android.net.Uri.parse(url)
             startActivity(intent)
         }
         return view
