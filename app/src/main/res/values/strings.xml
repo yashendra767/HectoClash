@@ -6,6 +6,7 @@
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
+
     <string name="previous">Previous</string>
 
     <string name="lorem_ipsum">
@@ -44,4 +45,7 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="default_web_client_id">AIzaSyDdSt0dqwjXuUTJyFzzj4UwtWy7-2sKAhs</string>
+    <string name="default_web_client_i">715941497254-bq503b5grmc4tkmd25fvqin9af3resdd.apps.googleusercontent.com</string>
+    <string name="default_web_client">715941497254-an5dmrs8n92dnl11dgj7au4ple6hhoue.apps.googleusercontent.com</string>
 </resources>

@@ -37,4 +37,5 @@ class Hectolevel : AppCompatActivity() {
 }
 
 
-data class NumberData(val value: Int)
+data class NumberData(
+    val value: Int?=123)

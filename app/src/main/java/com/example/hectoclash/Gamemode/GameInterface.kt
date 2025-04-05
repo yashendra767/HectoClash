@@ -1,12 +1,17 @@
 package com.example.hectoclash.Gamemode
 
+import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.InputFilter
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.Gravity
+import android.view.View
+import android.view.Window
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -22,14 +27,18 @@ class GameInterface : AppCompatActivity() {
 
     private lateinit var solutionContainer: LinearLayout
     private lateinit var sequenceTextView: TextView
-    private lateinit var submitButton: Button
+    private lateinit var timerTextView: TextView
+    private lateinit var submitButton: CardView
     private lateinit var resetButton: Button
     private lateinit var newSequenceButton: Button
 
     private val operatorFields = mutableListOf<EditText>()
     private var correctOperatorSequence: List<String> = listOf()
+    private var userInputSequence: List<String> = listOf()
 
     private val colors = listOf("#f94144", "#f3722c", "#f8961e", "#f9844a", "#f9c74f")
+    private var timer: CountDownTimer? = null
+    private val gameDuration = 2 * 60 * 1000L  // 2 minutes
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,19 +46,87 @@ class GameInterface : AppCompatActivity() {
 
         sequenceTextView = findViewById(R.id.sequence)
         solutionContainer = findViewById(R.id.solutioncontainer)
+        timerTextView = findViewById(R.id.timerText)
+        submitButton = findViewById(R.id.btnsubmit)
+
+        submitButton.setOnClickListener { checkSolution() }
 
         loadRandomSequence()
+        startGameTimer()
     }
 
-    private fun insertOperator(op: String) {
-        val focused = operatorFields.find { it.hasFocus() }
-        focused?.setText(op)
+    private fun checkSolution() {
+        userInputSequence = operatorFields.map { it.text.toString().trim() }
+
+        if (userInputSequence.any { it.isEmpty() }) {
+            showDialog("❌ Incomplete!", "Please fill in all operator fields.")
+            return
+        }
+
+        if (userInputSequence == correctOperatorSequence) {
+            showDialog("✅ Correct!", "You entered the correct operators! 🎉")
+        } else {
+            showDialog("❌ Incorrect!", "Correct sequence: ${correctOperatorSequence.joinToString(" ")}")
+        }
+    }
+
+    private fun showDialog(title: String, message: String) {
+        val dialog = AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("OK", null)
+            .create()
+        dialog.show()
+    }
+
+
+
+    private fun startGameTimer() {
+        timer = object : CountDownTimer(gameDuration, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val minutes = millisUntilFinished / 60000
+                val seconds = (millisUntilFinished % 60000) / 1000
+                timerTextView.text = String.format("Time Left: %02d:%02d", minutes, seconds)
+            }
+
+            override fun onFinish() {
+                timerTextView.text = "Time's Up!"
+//                showTimeUpDialog()
+            }
+        }.start()
+    }
+
+//    private fun showTimeUpDialog() {
+//        val dialog = Dialog(this)
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+//        dialog.setCancelable(false)
+//        dialog.setContentView(R.layout.dialog_time_up)
+//
+//        val btnProceed = dialog.findViewById<Button>(R.id.btnProceed)
+//        btnProceed.setOnClickListener {
+//            dialog.dismiss()
+//            evaluateUserInput()
+//        }
+//
+//        dialog.show()
+//    }
+
+    private fun evaluateUserInput() {
+        userInputSequence = operatorFields.map { it.text.toString().trim() }
+        val correctCount = userInputSequence.zip(correctOperatorSequence).count { it.first == it.second }
+
+        val intent = Intent(this, OnlineResultScreen::class.java).apply {
+            putExtra("correctCount", correctCount)
+            putExtra("totalCount", correctOperatorSequence.size)
+        }
+        startActivity(intent)
+        finish()
     }
 
     private fun loadRandomSequence() {
         val item = getRandomSequence()
         item?.let {
-            sequenceTextView.text = "Sequence: ${it.sequence}"
+            sequenceTextView.text = "Hecto Sequence: ${it.sequence}"
             correctOperatorSequence = it.operator_sequence
             displayEditableSolution(it.solution)
         } ?: run {
@@ -81,29 +158,18 @@ class GameInterface : AppCompatActivity() {
 
         val regex = "[0-9]+".toRegex()
         val numbers = regex.findAll(solution).map { it.value }.toList()
-        val splitSolution = solution.split(regex)
 
-        for (i in numbers.indices) {
-            addNumberCard(numbers[i], i)
-
-            if (i < splitSolution.size - 1) {
-                val ops = splitSolution[i + 1].trim()
-                for (char in ops) {
-                    when (char) {
-                        '(', ')' -> addParenthesisView(char)
-                        in "+-*/" -> addOperatorInput()
-                    }
+        var numberIndex = 0
+        for (char in solution) {
+            when {
+                char.isDigit() -> {
+                    addNumberCard(numbers[numberIndex], numberIndex)
+                    numberIndex++
                 }
+                char in "+-*/" -> addOperatorInput()
+                char == '(' || char == ')' -> addParenthesisView(char)
             }
         }
-
-        val resultText = TextView(this).apply {
-            text = "= 100"
-            textSize = 22f
-            gravity = Gravity.CENTER
-            setTextColor(Color.BLACK)
-        }
-        solutionContainer.addView(resultText)
     }
 
     private fun addNumberCard(number: String, index: Int) {
@@ -129,7 +195,7 @@ class GameInterface : AppCompatActivity() {
     private fun addOperatorInput() {
         val editText = EditText(this).apply {
             textSize = 22f
-            width = 50 // ⬅ Reduced width
+            width = 40
             height = 80
             gravity = Gravity.CENTER
             inputType = InputType.TYPE_CLASS_TEXT
@@ -166,30 +232,8 @@ class GameInterface : AppCompatActivity() {
         solutionContainer.addView(textView)
     }
 
-    private fun checkSolution() {
-        val userInput = operatorFields.map { it.text.toString().trim() }
-
-        if (userInput.any { it.isEmpty() }) {
-            showDialog("❌ Incomplete!", "Please fill in all operator fields.")
-            return
-        }
-
-        if (userInput == correctOperatorSequence) {
-            showDialog("✅ Correct!", "You entered the correct operators! 🎉")
-        } else {
-            showDialog("❌ Incorrect!", "Correct sequence: ${correctOperatorSequence.joinToString(" ")}")
-        }
-    }
-
-    private fun resetInputs() {
-        operatorFields.forEach { it.text.clear() }
-    }
-
-    private fun showDialog(title: String, message: String) {
-        AlertDialog.Builder(this)
-            .setTitle(title)
-            .setMessage(message)
-            .setPositiveButton("OK", null)
-            .show()
+    override fun onDestroy() {
+        super.onDestroy()
+        timer?.cancel()
     }
 }

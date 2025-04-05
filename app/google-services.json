@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "715941497254",
+    "firebase_url": "https://hectoclas-default-rtdb.firebaseio.com",
+    "project_id": "hectoclas",
+    "storage_bucket": "hectoclas.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:715941497254:android:a101f74e6a72aea22e6767",
+        "android_client_info": {
+          "package_name": "com.example.hectoclash"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "715941497254-bq503b5grmc4tkmd25fvqin9af3resdd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.hectoclash",
+            "certificate_hash": "fb4539df5b28182514a5c47cf8580482fc8080a8"
+          }
+        },
+        {
+          "client_id": "715941497254-an5dmrs8n92dnl11dgj7au4ple6hhoue.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdSt0dqwjXuUTJyFzzj4UwtWy7-2sKAhs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "715941497254-an5dmrs8n92dnl11dgj7au4ple6hhoue.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
