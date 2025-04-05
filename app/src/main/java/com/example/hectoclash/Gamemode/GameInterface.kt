@@ -1,5 +1,6 @@
 package com.example.hectoclash.Gamemode
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
@@ -29,8 +30,7 @@ class GameInterface : AppCompatActivity() {
     private lateinit var sequenceTextView: TextView
     private lateinit var timerTextView: TextView
     private lateinit var submitButton: CardView
-    private lateinit var resetButton: Button
-    private lateinit var newSequenceButton: Button
+    private lateinit var resetButton: ImageView
 
     private val operatorFields = mutableListOf<EditText>()
     private var correctOperatorSequence: List<String> = listOf()
@@ -40,6 +40,7 @@ class GameInterface : AppCompatActivity() {
     private var timer: CountDownTimer? = null
     private val gameDuration = 2 * 60 * 1000L  // 2 minutes
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game_interface)
@@ -48,8 +49,29 @@ class GameInterface : AppCompatActivity() {
         solutionContainer = findViewById(R.id.solutioncontainer)
         timerTextView = findViewById(R.id.timerText)
         submitButton = findViewById(R.id.btnsubmit)
+        resetButton = findViewById(R.id.resetbtn)
 
         submitButton.setOnClickListener { checkSolution() }
+
+        // Reset logic: clear inputs and move cursor to first field
+        resetButton.setOnClickListener {
+            operatorFields.forEach { it.setText("") }
+            operatorFields.firstOrNull()?.requestFocus()
+        }
+
+        // Operator buttons
+        findViewById<CardView>(R.id.cardAdd).setOnClickListener {
+            insertOperatorIntoFocusedField("+")
+        }
+        findViewById<CardView>(R.id.cardSubtract).setOnClickListener {
+            insertOperatorIntoFocusedField("-")
+        }
+        findViewById<CardView>(R.id.cardMultiply).setOnClickListener {
+            insertOperatorIntoFocusedField("*")
+        }
+        findViewById<CardView>(R.id.cardDivide).setOnClickListener {
+            insertOperatorIntoFocusedField("/")
+        }
 
         loadRandomSequence()
         startGameTimer()
@@ -79,8 +101,6 @@ class GameInterface : AppCompatActivity() {
         dialog.show()
     }
 
-
-
     private fun startGameTimer() {
         timer = object : CountDownTimer(gameDuration, 1000) {
             override fun onTick(millisUntilFinished: Long) {
@@ -91,25 +111,11 @@ class GameInterface : AppCompatActivity() {
 
             override fun onFinish() {
                 timerTextView.text = "Time's Up!"
-//                showTimeUpDialog()
+                checkSolution() // Auto-submit when time runs out
             }
         }.start()
     }
 
-//    private fun showTimeUpDialog() {
-//        val dialog = Dialog(this)
-//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-//        dialog.setCancelable(false)
-//        dialog.setContentView(R.layout.dialog_time_up)
-//
-//        val btnProceed = dialog.findViewById<Button>(R.id.btnProceed)
-//        btnProceed.setOnClickListener {
-//            dialog.dismiss()
-//            evaluateUserInput()
-//        }
-//
-//        dialog.show()
-//    }
 
     private fun evaluateUserInput() {
         userInputSequence = operatorFields.map { it.text.toString().trim() }
@@ -194,16 +200,31 @@ class GameInterface : AppCompatActivity() {
 
     private fun addOperatorInput() {
         val editText = EditText(this).apply {
-            textSize = 22f
+            textSize = 20f
             width = 40
             height = 80
             gravity = Gravity.CENTER
-            inputType = InputType.TYPE_CLASS_TEXT
             filters = arrayOf(InputFilter.LengthFilter(1))
             setTextColor(Color.WHITE)
             background = GradientDrawable().apply {
                 shape = GradientDrawable.RECTANGLE
                 setColor(Color.TRANSPARENT)
+            }
+
+            // Disable keyboard
+            inputType = InputType.TYPE_NULL
+            setOnTouchListener { v, event ->
+                v.performClick()
+                v.requestFocus()
+                false
+            }
+
+            // Disable keyboard on focus
+            try {
+                val method = EditText::class.java.getMethod("setShowSoftInputOnFocus", Boolean::class.javaPrimitiveType)
+                method.invoke(this, false)
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
 
@@ -230,6 +251,15 @@ class GameInterface : AppCompatActivity() {
             setTextColor(Color.WHITE)
         }
         solutionContainer.addView(textView)
+    }
+
+    private fun insertOperatorIntoFocusedField(operator: String) {
+        val focusedField = operatorFields.find { it.isFocused }
+        focusedField?.setText(operator)
+
+        val currentIndex = operatorFields.indexOf(focusedField)
+        val nextField = operatorFields.getOrNull(currentIndex + 1)
+        nextField?.requestFocus()
     }
 
     override fun onDestroy() {
