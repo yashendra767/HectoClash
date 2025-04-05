@@ -96,6 +96,10 @@ class PlayOnline : AppCompatActivity() {
                         "player2Name" to opponentName,
                         "status" to "waiting",
                         "startTime" to currentTime,
+                        "player1Ready" to false,
+                        "player2Ready" to false,
+                        "countdownStarted" to false,
+                        "syncStartTime" to 0L,
                         "question" to mapOf(
                             "sequence" to question.sequence,
                             "operator_sequence" to question.operator_sequence,
@@ -157,11 +161,8 @@ class PlayOnline : AppCompatActivity() {
                 override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                     Log.d("PlayOnline", "Notification received: ${snapshot.key}")
 
-                    val notification = snapshot.getValue(GameData::class.java)
-
-                    val gameId = notification?.player1
-                    val senderName = notification?.player2 ?: "Unknown player"
-
+                    val gameId = snapshot.child("gameId").getValue(String::class.java)
+                    val senderName = snapshot.child("senderName").getValue(String::class.java) ?: "Unknown player"
 
                     if (gameId != null) {
                         // Show the game request dialog
@@ -213,7 +214,7 @@ class PlayOnline : AppCompatActivity() {
     }
 
     private fun listenForGameStatusChanges(gameId: String) {
-        val gameStatusRef = database.child("games").child(gameId).child("status")
+        val gameStatusRef = database.child("games").child(gameId)
 
         // Remove previous listener if exists
         if (gameStatusListener != null) {
@@ -223,11 +224,15 @@ class PlayOnline : AppCompatActivity() {
         // Create new listener
         gameStatusListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val status = snapshot.getValue(String::class.java)
+                val status = snapshot.child("status").getValue(String::class.java)
                 Log.d("PlayOnline", "Game status changed to: $status")
 
                 when (status) {
-                    "active" -> startGameInterface(gameId)
+                    "active" -> {
+                        // Mark player1 as ready since they initiated the game
+                        database.child("games").child(gameId).child("player1Ready").setValue(true)
+                        startGameInterface(gameId)
+                    }
                     "rejected" -> {
                         dismissWaitingDialog()
                         showGameRejectedToast()
@@ -287,8 +292,11 @@ class PlayOnline : AppCompatActivity() {
     }
 
     private fun acceptGameRequest(gameId: String) {
+        // Set the game status to active
         database.child("games").child(gameId).child("status").setValue("active")
             .addOnSuccessListener {
+                // Set player2 as ready since they explicitly accepted
+                database.child("games").child(gameId).child("player2Ready").setValue(true)
                 startGameInterface(gameId)
             }
             .addOnFailureListener {
