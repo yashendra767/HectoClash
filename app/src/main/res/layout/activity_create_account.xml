@@ -35,7 +35,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="20dp"
         android:layout_height="wrap_content"
         app:boxStrokeWidth="3dp"
         app:boxStrokeColor="@color/blue_primary"
@@ -107,15 +107,14 @@
 
     </androidx.cardview.widget.CardView>
 
-    <Button
+    <TextView
         android:id="@+id/tvLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Already Registered ? Login"
         android:textStyle="bold"
         android:textSize="18dp"
-        android:backgroundTint="@color/black"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="8dp"
         android:textColor="@color/white"
         android:fontFamily="@font/actor"
         android:layout_gravity="center"

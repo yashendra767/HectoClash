@@ -35,7 +35,7 @@ class CreateAccount : AppCompatActivity() {
 
         val mailEditText = findViewById<TextInputEditText>(R.id.signUpEmail)
         val passEditText = findViewById<TextInputEditText>(R.id.signUpPass)
-        val alreadyAccount = findViewById<Button>(R.id.tvLogin)
+        val alreadyAccount = findViewById<TextView>(R.id.tvLogin)
         val signupContinue = findViewById<CardView>(R.id.signUpContinue)
 
         auth = FirebaseAuth.getInstance()
