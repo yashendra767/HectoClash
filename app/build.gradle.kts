@@ -54,6 +54,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation ("de.hdodenhof:circleimageview:3.1.0")
+<<<<<<< HEAD
 //firbase
 
     // Firebase BoM
@@ -64,4 +65,10 @@ dependencies {
 //googleauth
     implementation ("com.google.android.gms:play-services-auth:21.3.0")
 
+=======
+
+
+
+    implementation("com.google.code.gson:gson:2.8.8")
+>>>>>>> de6c354a660192ca7c831df3bbdc2af6798c9126
 }

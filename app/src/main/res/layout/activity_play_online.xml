@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="25dp"
-        android:text="solve the hecto sequence "
+        android:text="Solve the Hecto Sequence "
         android:textColor="@color/white"
         android:layout_gravity="center"/>
 
@@ -64,7 +64,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="VS"
+            android:text="Vs"
             android:textSize="25dp"
             android:textColor="@color/white"/>
         <androidx.cardview.widget.CardView

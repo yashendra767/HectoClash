@@ -27,6 +27,7 @@
         android:text="Welcome back Hecto Player "
         android:textColor="@color/white"
         android:textStyle="bold"
+        android:fontFamily="@font/actor"
         android:textSize="25dp"
         android:layout_gravity="center"/>
 
@@ -83,13 +84,14 @@
         tools:layout_editor_absoluteX="1dp" >
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="LogIn"
             android:textStyle="bold"
             android:textSize="30dp"
+            android:fontFamily="@font/itim"
             android:textColor="@color/white"
-            android:layout_gravity="bottom"
+            android:layout_gravity="center"
             android:gravity="center"/>
 
 

@@ -42,6 +42,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
+                            android:fontFamily="@font/actor"
                             android:layout_marginTop="3dp"
                             android:textSize="20sp"
                             android:textColor="@color/surface_light"
@@ -51,6 +52,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
+                            android:fontFamily="@font/actor"
                             android:textSize="15sp"
                             android:textColor="@color/surface_light"
                             android:text="Online Vs Random">
@@ -89,6 +91,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
+                            android:fontFamily="@font/actor"
                             android:layout_marginTop="3dp"
                             android:textSize="20sp"
                             android:textColor="@color/surface_light"
@@ -99,6 +102,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:textSize="15sp"
+                            android:fontFamily="@font/actor"
                             android:textColor="@color/surface_light"
                             android:text="Start Your Journey">
                         </TextView>
@@ -132,6 +136,7 @@
                         android:layout_margin="5dp"
                         android:textSize="20sp"
                         android:textColor="@color/surface_light"
+                        android:fontFamily="@font/actor"
                         android:text="Solve Daily Puzzle">
                     </TextView>
 
@@ -166,6 +171,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="3dp"
+                            android:fontFamily="@font/actor"
                             android:textSize="20sp"
                             android:textColor="@color/surface_light"
                             android:text="Custom Game Rooms">
@@ -174,6 +180,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
+                            android:fontFamily="@font/actor"
                             android:textSize="15sp"
                             android:textColor="@color/surface_light"
                             android:text="Multiplayer">
@@ -212,6 +219,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="3dp"
+                            android:fontFamily="@font/actor"
                             android:textSize="20sp"
                             android:textColor="@color/surface_light"
                             android:text="Learn HectoClash">
@@ -220,6 +228,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
+                            android:fontFamily="@font/actor"
                             android:textSize="15sp"
                             android:textColor="@color/surface_light"
                             android:text="Get an Idea">
