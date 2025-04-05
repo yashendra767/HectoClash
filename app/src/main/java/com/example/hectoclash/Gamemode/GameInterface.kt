@@ -19,8 +19,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.example.hectoclash.R
 import com.example.hectoclash.dataclass.HectoQuestion
+import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+
 import java.io.InputStreamReader
 import kotlin.random.Random
 
@@ -150,7 +151,7 @@ class GameInterface : AppCompatActivity() {
         return try {
             val inputStream = assets.open("sequence.json")
             val reader = InputStreamReader(inputStream)
-            val type = object : TypeToken<List<HectoQuestion>>() {}.type
+            val type = object : com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken<List<HectoQuestion>>() {}.type
             Gson().fromJson(reader, type)
         } catch (e: Exception) {
             e.printStackTrace()

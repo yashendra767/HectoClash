@@ -27,9 +27,9 @@ class home : Fragment() {
             startActivity(Intent(requireContext(), PlayOnline::class.java))
         }
 
-//        solveHectoClash.setOnClickListener {
-//            startActivity(Intent(requireContext(), SolveHectoClashActivity::class.java))
-//        }
+     solveHectoClash.setOnClickListener {
+            startActivity(Intent(requireContext(), Hectolevel::class.java))
+     }
 //
 //        dailyPuzzle.setOnClickListener {
 //            startActivity(Intent(requireContext(), DailyPuzzleActivity::class.java))
