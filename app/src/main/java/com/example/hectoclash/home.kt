@@ -30,6 +30,10 @@ class home : Fragment() {
         firestore = FirebaseFirestore.getInstance()
 
         val playOnline = view.findViewById<CardView>(R.id.playOnline)
+        val solveHecto = view.findViewById<CardView>(R.id.solveHectoClash)
+        solveHecto.setOnClickListener {
+            startActivity((Intent(requireContext(), Hectolevel::class.java)))
+        }
 
         playOnline.setOnClickListener {
             findRandomOpponent()
@@ -53,12 +57,13 @@ class home : Fragment() {
                 if (otherUsers.isNotEmpty()) {
                     val randomUser = otherUsers.random()
                     val opponentName = randomUser.getString("heptoName")
+                    val opponentEmail = randomUser.id // The document ID is the user's email
 
-                    if (!opponentName.isNullOrEmpty()) {
-                        saveOpponentToSharedPrefs(opponentName)
+                    if (!opponentName.isNullOrEmpty() && !opponentEmail.isNullOrEmpty()) {
+                        saveOpponentToSharedPrefs(opponentName, opponentEmail)
                         startActivity(Intent(requireContext(), PlayOnline::class.java))
                     } else {
-                        Toast.makeText(requireContext(), "Opponent has no username.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Opponent data incomplete.", Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     Toast.makeText(requireContext(), "No other users found!", Toast.LENGTH_SHORT).show()
@@ -70,11 +75,12 @@ class home : Fragment() {
             }
     }
 
-    private fun saveOpponentToSharedPrefs(opponentName: String) {
+    private fun saveOpponentToSharedPrefs(opponentName: String, opponentEmail: String) {
         val sharedPrefs = requireContext().getSharedPreferences("HectoClashPrefs", Context.MODE_PRIVATE)
         sharedPrefs.edit()
             .putString("opponent_name", opponentName)
+            .putString("opponent_email", opponentEmail) // Save the opponent's email
             .apply()
-        Log.d("SharedPrefs", "Opponent $opponentName stored for game.")
+        Log.d("SharedPrefs", "Opponent $opponentName ($opponentEmail) stored for game.")
     }
 }

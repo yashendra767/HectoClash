@@ -22,7 +22,7 @@ class LevelAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LevelViewHolder {
-        val view: View = LayoutInflater.from(context).inflate(R.layout.levelrecview, parent, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.levelrecview, parent, false)
         return LevelViewHolder(view)
     }
 
@@ -41,15 +41,12 @@ class LevelAdapter(
             holder.itemView.isEnabled = true
             holder.itemView.setOnClickListener {
                 if (sequenceItem != null) {
-                    Toast.makeText(context, "Clicked Level: $levelNumber", Toast.LENGTH_SHORT).show()
                     val intent = Intent(context, LevelDetailActivity::class.java)
                     intent.putExtra("clickedLevel", levelNumber.toString())
                     intent.putExtra("Sequencedata", sequenceItem.sequence)
                     intent.putExtra("Soln_of_seq", sequenceItem.solution)
                     intent.putExtra("soln_operator_seq", ArrayList(sequenceItem.operator_sequence))
-                    context.startActivity(intent)
-                } else {
-                    Toast.makeText(context, "Level $levelNumber - Sequence data missing", Toast.LENGTH_SHORT).show()
+                    context.startActivityForResult(intent, 1001)
                 }
             }
         } else {

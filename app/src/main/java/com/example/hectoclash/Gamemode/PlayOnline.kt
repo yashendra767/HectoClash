@@ -10,14 +10,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+
 import com.example.hectoclash.R
 import com.example.hectoclash.dataclass.GameData
 import com.example.hectoclash.dataclass.HectoQuestion
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.InputStreamReader
@@ -28,19 +26,27 @@ class PlayOnline : AppCompatActivity() {
 
     private val database = FirebaseDatabase.getInstance().reference
     private val auth = FirebaseAuth.getInstance()
+    private var waitingDialog: AlertDialog? = null
+    private var gameRequestDialog: AlertDialog? = null
+    private var questionsList: List<HectoQuestion> = emptyList()
+    private var gameNotificationsListener: ChildEventListener? = null
+    private var gameStatusListener: ValueEventListener? = null
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_online)
 
+        // Load questions from JSON on activity creation
+        loadQuestions()
+
         // Get SharedPreferences
         val sharedPref = getSharedPreferences("HectoClashPrefs", Context.MODE_PRIVATE)
         val currentUserName = sharedPref.getString("heptoname", "You")
         val opponentName = sharedPref.getString("opponent_name", "Opponent")
-        val opponentUserId = sharedPref.getString("opponent_name", null) // Correct key
+        val opponentEmail = sharedPref.getString("opponent_email", "opponent_name")
 
-        Log.d("PlayOnline", "Current user: $currentUserName, Opponent: $opponentName")
+        Log.d("PlayOnline", "Current user: $currentUserName, Opponent: $opponentName, OpponentEmail: $opponentEmail")
 
         // Set user names in UI
         findViewById<TextView>(R.id.currentUserNameTextView).text = currentUserName
@@ -48,123 +54,278 @@ class PlayOnline : AppCompatActivity() {
 
         // Start game logic
         findViewById<CardView>(R.id.StartGame).setOnClickListener {
-            val currentUserId = auth.currentUser?.uid
-
-            if (currentUserId == null || opponentUserId.isNullOrEmpty()) {
-                Toast.makeText(this, "User info missing", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            if (currentUserId == opponentUserId) {
-                Toast.makeText(this, "Cannot play against yourself!", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            val gameId = UUID.randomUUID().toString()
-
-            val currentTime = System.currentTimeMillis()
-
-            FirebaseDatabase.getInstance().reference.child("games")
-                .child(gameId).child("status").setValue("active")
-            FirebaseDatabase.getInstance().reference.child("games")
-                .child(gameId).child("startTime").setValue(currentTime)
-            val question = getRandomSequence()
-
-            if (question == null) {
-                Toast.makeText(this, "Failed to load questions", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            val gameRequest = mapOf(
-                "player1" to currentUserId,
-                "player2" to opponentUserId,
-                "status" to "waiting",
-                "question" to mapOf(
-                    "sequence" to question.sequence,
-                    "operator_sequence" to question.operator_sequence,
-                    "solution" to question.solution
-                )
-            )
-
-            database.child("games").child(gameId).setValue(gameRequest)
-                .addOnSuccessListener {
-                    Toast.makeText(this, "Game request sent!", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, GameInterface::class.java)
-                    intent.putExtra("gameId", gameId)
-                    startActivity(intent)
-                }
-                .addOnFailureListener {
-                    Toast.makeText(this, "Failed to start game", Toast.LENGTH_SHORT).show()
-                }
+            startGameRequest(currentUserName, opponentName, opponentEmail)
         }
 
+        // Listen for incoming game requests
+        listenForIncomingGameRequests()
+    }
 
+    private fun loadQuestions() {
+        questionsList = readJsonFromAssets().orEmpty()
+        Log.d("PlayOnline", "Loaded ${questionsList.size} questions.")
+        if (questionsList.isEmpty()) {
+            Toast.makeText(this, "Failed to load questions.", Toast.LENGTH_LONG).show()
+        }
+    }
 
-        val database = FirebaseDatabase.getInstance().reference
-        val userGamesRef = database.child("games")
+    private fun startGameRequest(currentUserName: String?, opponentName: String?, opponentEmail: String?) {
+        val currentUserEmail = auth.currentUser?.email
 
-        userGamesRef.orderByChild("player2").equalTo(currentUserName)
-            .addChildEventListener(object : ChildEventListener {
+        when {
+            currentUserEmail == null || opponentEmail.isNullOrEmpty() -> {
+                Toast.makeText(this, "User information is missing.", Toast.LENGTH_SHORT).show()
+                Log.e("PlayOnline", "Missing info: current=$currentUserEmail, opponent=$opponentEmail")
+            }
+            currentUserEmail == opponentEmail -> {
+                Toast.makeText(this, "You cannot play against yourself!", Toast.LENGTH_SHORT).show()
+            }
+            questionsList.isEmpty() -> {
+                Toast.makeText(this, "No questions available. Cannot start game.", Toast.LENGTH_SHORT).show()
+            }
+            else -> {
+                val gameId = UUID.randomUUID().toString()
+                val currentTime = System.currentTimeMillis()
+                val question = getRandomQuestion()
+
+                if (question != null) {
+                    val gameRequest = mapOf(
+                        "player1" to currentUserEmail,
+                        "player2" to opponentEmail,
+                        "player1Name" to currentUserName,
+                        "player2Name" to opponentName,
+                        "status" to "waiting",
+                        "startTime" to currentTime,
+                        "question" to mapOf(
+                            "sequence" to question.sequence,
+                            "operator_sequence" to question.operator_sequence,
+                            "solution" to question.solution
+                        )
+                    )
+
+                    // Save game data
+                    database.child("games").child(gameId).setValue(gameRequest)
+                        .addOnSuccessListener {
+                            Log.d("PlayOnline", "Game data saved with ID: $gameId")
+
+                            // Create a separate notification for the opponent
+                            val gameNotification = mapOf(
+                                "gameId" to gameId,
+                                "senderName" to currentUserName,
+                                "senderEmail" to currentUserEmail,
+                                "timestamp" to currentTime
+                            )
+
+                            // Create a sanitized email key (replace dots with commas)
+                            val sanitizedEmail = opponentEmail.replace(".", ",")
+
+                            // Write to user-specific notification node
+                            database.child("game_notifications")
+                                .child(sanitizedEmail)
+                                .child(gameId)
+                                .setValue(gameNotification)
+                                .addOnSuccessListener {
+                                    Log.d("PlayOnline", "Game notification saved for $opponentEmail")
+                                    Toast.makeText(this, "Game request sent! Waiting for opponent...", Toast.LENGTH_SHORT).show()
+                                    showWaitingForOpponentDialog(gameId)
+                                }
+                                .addOnFailureListener { error ->
+                                    Log.e("PlayOnline", "Failed to save notification: ${error.message}")
+                                    Toast.makeText(this, "Failed to notify opponent.", Toast.LENGTH_SHORT).show()
+                                }
+                        }
+                        .addOnFailureListener { error ->
+                            Log.e("PlayOnline", "Failed to save game: ${error.message}")
+                            Toast.makeText(this, "Failed to start game.", Toast.LENGTH_SHORT).show()
+                        }
+                } else {
+                    Toast.makeText(this, "Failed to get a random question.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun listenForIncomingGameRequests() {
+        val currentUserEmail = auth.currentUser?.email
+        if (currentUserEmail != null) {
+            val sanitizedEmail = currentUserEmail.replace(".", ",")
+
+            Log.d("PlayOnline", "Listening for notifications at: $sanitizedEmail")
+
+            // Create listener
+            gameNotificationsListener = object : ChildEventListener {
                 override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                    val game = snapshot.getValue(GameData::class.java)
-                    if (game?.status == "waiting") {
-                        // Show dialog
-                        showGameRequestDialog(snapshot.key ?: "", game)
+                    Log.d("PlayOnline", "Notification received: ${snapshot.key}")
+
+                    val notification = snapshot.getValue(GameData::class.java)
+
+                    val gameId = notification?.player1
+                    val senderName = notification?.player2 ?: "Unknown player"
+
+
+                    if (gameId != null) {
+                        // Show the game request dialog
+                        showGameRequestDialog(gameId, senderName)
+
+                        // Remove the notification once processed
+                        snapshot.ref.removeValue()
                     }
                 }
 
                 override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                    // Not needed for notifications
                 }
 
                 override fun onChildRemoved(snapshot: DataSnapshot) {
-
+                    // Not needed for notifications
                 }
 
                 override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-
+                    // Not needed for notifications
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-
+                    Log.e("PlayOnline", "Game notifications listener cancelled: ${error.message}")
                 }
-            })
+            }
+
+            // Attach listener
+            database.child("game_notifications")
+                .child(sanitizedEmail)
+                .addChildEventListener(gameNotificationsListener!!)
+        }
     }
 
-    fun showGameRequestDialog(gameId: String, game: GameData) {
-        AlertDialog.Builder(this)
-            .setTitle("Game Invitation")
-            .setMessage("Player ${game.player1} wants to play. Accept?")
-            .setPositiveButton("Accept") { _, _ ->
-                startMultiplayerGame(gameId, game)
-            }
-            .setNegativeButton("Reject") { _, _ ->
-                FirebaseDatabase.getInstance().reference.child("games").child(gameId)
-                    .child("status").setValue("rejected")
-            }
+    private fun showWaitingForOpponentDialog(gameId: String) {
+        waitingDialog = AlertDialog.Builder(this)
+            .setTitle("Waiting for Opponent")
+            .setMessage("Waiting for opponent to accept your game request...")
             .setCancelable(false)
-        .show()
-    }
-    private fun startMultiplayerGame(gameId: String, game: GameData) {
-        val database = FirebaseDatabase.getInstance().reference
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+                cancelGameRequest(gameId)
+            }
+            .create()
 
-        // Update game status to active
-        database.child("games").child(gameId).child("status").setValue("active")
+        waitingDialog?.show()
+
+        listenForGameStatusChanges(gameId)
+    }
+
+    private fun listenForGameStatusChanges(gameId: String) {
+        val gameStatusRef = database.child("games").child(gameId).child("status")
+
+        // Remove previous listener if exists
+        if (gameStatusListener != null) {
+            gameStatusRef.removeEventListener(gameStatusListener!!)
+        }
+
+        // Create new listener
+        gameStatusListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val status = snapshot.getValue(String::class.java)
+                Log.d("PlayOnline", "Game status changed to: $status")
+
+                when (status) {
+                    "active" -> startGameInterface(gameId)
+                    "rejected" -> {
+                        dismissWaitingDialog()
+                        showGameRejectedToast()
+                        gameStatusRef.removeEventListener(this)
+                    }
+                    "cancelled" -> {
+                        dismissWaitingDialog()
+                        gameStatusRef.removeEventListener(this)
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                dismissWaitingDialog()
+                Toast.makeText(this@PlayOnline, "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+                gameStatusRef.removeEventListener(this)
+            }
+        }
+
+        // Attach listener
+        gameStatusRef.addValueEventListener(gameStatusListener!!)
+    }
+
+    private fun dismissWaitingDialog() {
+        waitingDialog?.dismiss()
+        waitingDialog = null
+    }
+
+    private fun cancelGameRequest(gameId: String) {
+        database.child("games").child(gameId).child("status").setValue("cancelled")
             .addOnSuccessListener {
-                // Start the game interface activity
-                val intent = Intent(this, GameInterface::class.java)
-                intent.putExtra("gameId", gameId)
-                startActivity(intent)
-                finish() // Optional: close current lobby screen
+                Toast.makeText(this, "Game request cancelled.", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
-                Toast.makeText(this, "Failed to start game", Toast.LENGTH_SHORT).show()
-                }
+                Toast.makeText(this, "Failed to cancel game request.", Toast.LENGTH_SHORT).show()
+            }
     }
 
-    private fun getRandomSequence(): HectoQuestion? {
-        return readJsonFromAssets()?.let { list ->
-            if (list.isNotEmpty()) list[Random.nextInt(list.size)] else null
-        }
+    private fun showGameRequestDialog(gameId: String, player1Name: String) {
+        // Dismiss any existing dialog
+        gameRequestDialog?.dismiss()
+
+        // Create new dialog
+        gameRequestDialog = AlertDialog.Builder(this)
+            .setTitle("Game Invitation")
+            .setMessage("$player1Name wants to play. Accept?")
+            .setPositiveButton("Accept") { _, _ ->
+                acceptGameRequest(gameId)
+            }
+            .setNegativeButton("Reject") { _, _ ->
+                rejectGameRequest(gameId)
+            }
+            .setCancelable(false)
+            .create()
+
+        gameRequestDialog?.show()
+    }
+
+    private fun acceptGameRequest(gameId: String) {
+        database.child("games").child(gameId).child("status").setValue("active")
+            .addOnSuccessListener {
+                startGameInterface(gameId)
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to accept game.", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun rejectGameRequest(gameId: String) {
+        database.child("games").child(gameId).child("status").setValue("rejected")
+            .addOnSuccessListener {
+                Toast.makeText(this, "Game request rejected.", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to reject game.", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun startGameInterface(gameId: String) {
+        dismissWaitingDialog()
+        gameRequestDialog?.dismiss()
+        val intent = Intent(this, GameInterface::class.java)
+        intent.putExtra("gameId", gameId)
+        startActivity(intent)
+    }
+
+    private fun showGameRejectedToast() {
+        dismissWaitingDialog()
+        Toast.makeText(this, "Game request was rejected by the opponent.", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showGameCancelledToast() {
+        dismissWaitingDialog()
+        Toast.makeText(this, "The game request was cancelled.", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun getRandomQuestion(): HectoQuestion? {
+        return if (questionsList.isNotEmpty()) questionsList[Random.nextInt(questionsList.size)] else null
     }
 
     private fun readJsonFromAssets(): List<HectoQuestion>? {
@@ -174,8 +335,44 @@ class PlayOnline : AppCompatActivity() {
             val type = object : TypeToken<List<HectoQuestion>>() {}.type
             Gson().fromJson(reader, type)
         } catch (e: Exception) {
+            Log.e("PlayOnline", "Error reading sequence.json: ${e.message}")
             e.printStackTrace()
             null
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Re-register listeners when activity comes to foreground
+        if (gameNotificationsListener == null) {
+            listenForIncomingGameRequests()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Don't remove listeners on pause to ensure we still receive notifications
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Dismiss any dialogs to prevent memory leaks
+        waitingDialog?.dismiss()
+        gameRequestDialog?.dismiss()
+
+        // Remove all listeners
+        val currentUserEmail = auth.currentUser?.email
+        if (currentUserEmail != null && gameNotificationsListener != null) {
+            val sanitizedEmail = currentUserEmail.replace(".", ",")
+            database.child("game_notifications")
+                .child(sanitizedEmail)
+                .removeEventListener(gameNotificationsListener!!)
+            gameNotificationsListener = null
+        }
+
+        // Remove game status listener if exists
+        if (gameStatusListener != null) {
+            gameStatusListener = null
         }
     }
 }

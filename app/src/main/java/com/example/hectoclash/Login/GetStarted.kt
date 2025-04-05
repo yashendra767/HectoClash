@@ -60,6 +60,7 @@ class GetStarted : AppCompatActivity() {
 
         getStartedButton.setOnClickListener {
             startActivity(Intent(this, CreateAccount::class.java))
+            finish()
         }
 
         googleButton.setOnClickListener {

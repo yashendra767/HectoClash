@@ -1,20 +1,24 @@
 package com.example.hectoclash
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.InputFilter
 import android.text.InputType
 import android.text.method.DigitsKeyListener
+import android.util.Log
 import android.view.Gravity
 import android.widget.*
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class LevelDetailActivity : AppCompatActivity() {
+    private val auth = FirebaseAuth.getInstance()
+    private val firestore = FirebaseFirestore.getInstance()
 
     private lateinit var solutionContainer: LinearLayout
     private lateinit var sequenceTextView: TextView
@@ -22,31 +26,25 @@ class LevelDetailActivity : AppCompatActivity() {
     private lateinit var continueButton: CardView
     private val operatorFields = mutableListOf<EditText>()
     private var correctOperatorSequence: List<String> = listOf()
+    private var clickedLevel: Int = 1
 
     private val colors = listOf("#f94144", "#f3722c", "#f8961e", "#f9844a", "#f9c74f", "#90be6d", "#43aa8b", "#577590")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_level_detail)
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
         levelNumberTextView = findViewById(R.id.levelgame_levelno)
         sequenceTextView = findViewById(R.id.sequence)
         solutionContainer = findViewById(R.id.solutioncontainer_level)
         continueButton = findViewById(R.id.btnsubmit_level)
 
-        val clickedLevel = intent.getStringExtra("clickedLevel")
+        clickedLevel = intent.getStringExtra("clickedLevel")?.toIntOrNull() ?: 1
         val seqData = intent.getStringExtra("Sequencedata")
         val solnOfSeq = intent.getStringExtra("Soln_of_seq")
         val solnOperatorSeq = intent.getStringArrayListExtra("soln_operator_seq") ?: arrayListOf()
 
-        levelNumberTextView.text = clickedLevel
+        levelNumberTextView.text = clickedLevel.toString()
         sequenceTextView.text = "Hecto Sequence: ${seqData ?: ""}"
         correctOperatorSequence = solnOperatorSeq
 
@@ -58,19 +56,10 @@ class LevelDetailActivity : AppCompatActivity() {
         findViewById<CardView>(R.id.cardSubtract).setOnClickListener { insertOperatorIntoFirstEmpty("-") }
         findViewById<CardView>(R.id.cardMultiply).setOnClickListener { insertOperatorIntoFirstEmpty("*") }
         findViewById<CardView>(R.id.cardDivide).setOnClickListener { insertOperatorIntoFirstEmpty("/") }
-
         findViewById<ImageView>(R.id.resetbtn).setOnClickListener { resetFields() }
     }
 
-    private fun getSafeColor(index: Int): Int {
-        val defaultColor = "#CCCCCC"
-        return try {
-            val colorHex = colors.getOrNull(index % colors.size) ?: defaultColor
-            Color.parseColor(colorHex)
-        } catch (e: Exception) {
-            Color.parseColor(defaultColor)
-        }
-    }
+    private fun getSafeColor(index: Int): Int = Color.parseColor(colors.getOrNull(index % colors.size) ?: "#CCCCCC")
 
     private fun displaySolutionSequence(solution: String) {
         solutionContainer.removeAllViews()
@@ -82,8 +71,7 @@ class LevelDetailActivity : AppCompatActivity() {
         for (char in solution) {
             when {
                 char.isDigit() -> {
-                    addNumberTextView(numbers.getOrNull(numberIndex) ?: "", numberIndex)
-                    numberIndex++
+                    addNumberTextView(numbers.getOrNull(numberIndex++) ?: "", numberIndex)
                 }
                 char in "+-*/" -> addOperatorInputField(operatorFields.size)
                 char == '(' || char == ')' -> addParenthesisTextView(char)
@@ -141,7 +129,6 @@ class LevelDetailActivity : AppCompatActivity() {
             gravity = Gravity.CENTER
             setTextColor(Color.BLUE)
             background = GradientDrawable().apply {
-                //setColor(Color.BLACK)
                 cornerRadius = 24f
             }
             layoutParams = LinearLayout.LayoutParams(
@@ -174,21 +161,38 @@ class LevelDetailActivity : AppCompatActivity() {
         var isCorrect = true
         userInput.forEachIndexed { index, input ->
             val isMatch = input == correctOperatorSequence.getOrNull(index)
-            val field = operatorFields[index]
-            val backgroundColor = if (isMatch) "#4CAF50" else "#F44336"
-            field.background = GradientDrawable().apply {
+            operatorFields[index].background = GradientDrawable().apply {
                 shape = GradientDrawable.RECTANGLE
                 cornerRadius = 16f
-                setColor(Color.parseColor(backgroundColor))
+                setColor(Color.parseColor(if (isMatch) "#4CAF50" else "#F44336"))
             }
             if (!isMatch) isCorrect = false
         }
 
-        Toast.makeText(
-            this,
-            if (isCorrect) "✅ Correct Answer!" else "❌ Incorrect! Try again.",
-            Toast.LENGTH_SHORT
-        ).show()
+        if (isCorrect) {
+            unlockAndReturn()
+        } else {
+            Toast.makeText(this, "❌ Incorrect! Try again.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun unlockAndReturn() {
+        val uid = auth.currentUser?.email ?: return
+        val nextLevel = clickedLevel + 1
+
+        firestore.collection("users").document(uid)
+            .update("unlockedLevel", nextLevel)
+            .addOnSuccessListener {
+                val intent = Intent().apply {
+                    putExtra("unlockedLevel", nextLevel)
+                }
+                setResult(Activity.RESULT_OK, intent)
+                finish()
+            }
+            .addOnFailureListener {
+                Log.e("LevelDetail", "Failed to update unlocked level", it)
+                finish()
+            }
     }
 
     private fun resetFields() {

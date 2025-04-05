@@ -1,6 +1,8 @@
 package com.example.hectoclash
 
 import SequenceDataItem
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -12,7 +14,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.InputStreamReader
-import java.lang.reflect.Type
 
 data class NumberData(val value: Int)
 
@@ -38,45 +39,28 @@ class Hectolevel : AppCompatActivity() {
         sequenceDataList = loadSequenceData()
 
         val currentUser = auth.currentUser
-        if (currentUser == null) {
-            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
-            return
-        }
+        val uid = currentUser?.uid ?: return
 
-        val uid = currentUser.email.toString()
         firestore.collection("users").document(uid).get()
             .addOnSuccessListener { document ->
-                if (document != null && document.contains("unlockedLevel")) {
-                    unlockedLevel = document.getLong("unlockedLevel")?.toInt() ?: 1
-                } else {
-                    unlockedLevel = 1
-                    // initialize on first login
-                    firestore.collection("users").document(uid).set(mapOf("unlockedLevel" to 1))
-                }
-
+                unlockedLevel = document.getLong("unlockedLevel")?.toInt() ?: 1
                 levelAdapter = LevelAdapter(this, numberList, sequenceDataList, unlockedLevel)
                 recyclerView.adapter = levelAdapter
             }
             .addOnFailureListener {
-                Toast.makeText(this, "Failed to load progress", Toast.LENGTH_SHORT).show()
-                Log.e("Hectolevel", "Error fetching unlocked level: ", it)
+                Log.e("Hectolevel", "Failed to fetch user data", it)
             }
     }
 
-    fun unlockNextLevel(currentLevel: Int) {
-        val currentUser = auth.currentUser ?: return
-        val uid = currentUser.uid
-
-        if (currentLevel + 1 > unlockedLevel) {
-            unlockedLevel = currentLevel + 1
-            firestore.collection("users").document(uid)
-                .update("unlockedLevel", unlockedLevel)
-                .addOnSuccessListener {
-                    levelAdapter.updateUnlockedLevel(unlockedLevel)
-                }
-                .addOnFailureListener {
-                    Log.e("Hectolevel", "Failed to update unlocked level", it)
-                }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1001 && resultCode == Activity.RESULT_OK) {
+            val newLevel = data?.getIntExtra("unlockedLevel", unlockedLevel) ?: unlockedLevel
+            if (newLevel > unlockedLevel) {
+                unlockedLevel = newLevel
+                levelAdapter.updateUnlockedLevel(unlockedLevel)
+                Toast.makeText(this, "🎉 Congratulations! Level $unlockedLevel unlocked!", Toast.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -84,8 +68,8 @@ class Hectolevel : AppCompatActivity() {
         return try {
             val inputStream = assets.open("sequence.json")
             val reader = InputStreamReader(inputStream)
-            val type: Type = object : TypeToken<List<SequenceDataItem>>() {}.type
-            Gson().fromJson(reader, type) ?: emptyList()
+            val type = object : TypeToken<List<SequenceDataItem>>() {}.type
+            Gson().fromJson(reader, type)
         } catch (e: Exception) {
             e.printStackTrace()
             Toast.makeText(this, "Failed to load sequence data", Toast.LENGTH_SHORT).show()

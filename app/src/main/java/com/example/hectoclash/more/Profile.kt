@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.hectoclash.Login.CreateAccount
 import com.example.hectoclash.Login.SignIn
 import com.example.hectoclash.R
 import com.google.firebase.auth.FirebaseAuth
@@ -33,7 +34,7 @@ class Profile : AppCompatActivity() {
         val logOut = findViewById<TextView>(R.id.btnLogout)
         logOut.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
-            val intent = Intent(this@Profile, SignIn::class.java)
+            val intent = Intent(this@Profile, CreateAccount::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
             finish()

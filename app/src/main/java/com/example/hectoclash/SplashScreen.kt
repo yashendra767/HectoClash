@@ -7,6 +7,7 @@ import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import com.example.hectoclash.Login.GetStarted
+import com.google.firebase.auth.FirebaseAuth
 
 class SplashScreen : AppCompatActivity() {
 
@@ -18,10 +19,25 @@ class SplashScreen : AppCompatActivity() {
 
         setContentView(R.layout.activity_splash_screen)
 
-        // Delay before moving to MainActivity (e.g., 4 seconds)
-        Handler(Looper.getMainLooper()).postDelayed({
-            startActivity(Intent(this, GetStarted::class.java))
-            finish() // Close splash screen
-        }, 4000)
+
+
+        var auth = FirebaseAuth.getInstance()
+        var currentuser =  auth.currentUser
+        if (currentuser!=null){
+            Handler(Looper.getMainLooper()).postDelayed({
+                startActivity(Intent(this, MainActivity::class.java))
+                finish() // Close splash screen
+            }, 4000)
+
+        }
+        else{
+            // Delay before moving to MainActivity (e.g., 4 seconds)
+            Handler(Looper.getMainLooper()).postDelayed({
+                startActivity(Intent(this, GetStarted::class.java))
+                finish() // Close splash screen
+            }, 4000)
+        }
+
     }
+
 }
