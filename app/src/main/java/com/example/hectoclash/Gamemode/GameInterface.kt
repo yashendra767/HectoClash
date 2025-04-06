@@ -40,18 +40,29 @@ class GameInterface : AppCompatActivity() {
     private val gameDuration = 2 * 60 * 1000L // 2 minutes
     private val colors = listOf("#f94144", "#f3722c", "#f8961e", "#f9844a", "#f9c74f")
 
+    // Firebase
+    private lateinit var gameRef: DatabaseReference
+    private var gameId: String? = null
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Check if this activity is being re-created unnecessarily
+        if (!isTaskRoot() && intent?.hasCategory(Intent.CATEGORY_LAUNCHER) == true) {
+            finish() // If it's not the root and was launched again, just finish
+            return
+        }
+
         setContentView(R.layout.activity_game_interface)
 
         // Initialize UI
         initializeViews()
         setupListeners()
 
-        val gameId = intent.getStringExtra("gameId")
+        gameId = intent.getStringExtra("gameId")
         if (!gameId.isNullOrEmpty()) {
-            loadGameFromFirebase(gameId)
+            loadGameFromFirebase(gameId!!)
         } else {
             loadRandomSequence()
             startGameTimer(gameDuration)
@@ -97,38 +108,39 @@ class GameInterface : AppCompatActivity() {
         gameRef.child("status").setValue("active")
         gameRef.child("startTime").setValue(startTime)
 
-        gameRef.addValueEventListener(object : ValueEventListener {
+        gameRef.addListenerForSingleValueEvent(object : ValueEventListener { // Changed to SingleValueEvent
             override fun onDataChange(snapshot: DataSnapshot) {
                 val game = snapshot.getValue(GameData::class.java)
 
                 if (game != null) {
-                    if (game.status == "active") {
-                        val startTime = game.startTime ?: return
-                        val remainingTime = gameDuration - (System.currentTimeMillis() - startTime)
-
-                        // Prevent game from starting again on repeated trigger
-                        gameRef.removeEventListener(this)
-
-                        if (game.question != null) {
-                            sequenceTextView.text = "Hecto Sequence: ${game.question!!.sequence}"
-                            displayEditableSolution(game.question.solution)
-                            correctOperatorSequence = game.question.operator_sequence
-                            startGameTimer(remainingTime)
+                    if (game.question != null) {
+                        sequenceTextView.text = "Hecto Sequence: ${game.question!!.sequence}"
+                        displayEditableSolution(game.question.solution)
+                        correctOperatorSequence = game.question.operator_sequence
+                        val initialRemainingTime = gameDuration - (System.currentTimeMillis() - (game.startTime ?: startTime))
+                        if (initialRemainingTime > 0) {
+                            startGameTimer(initialRemainingTime)
+                        } else {
+                            timerTextView.text = "Time's Up!"
                         }
-                    } else if (game.status == "waiting") {
-                        sequenceTextView.text = "Waiting for opponent to accept..."
                     }
+                    // You might need to set up a separate listener for ongoing game changes
+                } else {
+                    Toast.makeText(this@GameInterface, "Game not found", Toast.LENGTH_SHORT).show()
+                    finish()
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(this@GameInterface, "Failed to load game", Toast.LENGTH_SHORT).show()
+                finish()
             }
         })
     }
 
 
     private fun startGameTimer(remainingTime: Long) {
+        timer?.cancel() // Ensure any existing timer is cancelled
         timer = object : CountDownTimer(remainingTime, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val minutes = millisUntilFinished / 60000

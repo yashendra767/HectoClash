@@ -35,7 +35,7 @@ class Hectolevel : AppCompatActivity() {
         recyclerView = findViewById(R.id.levelrecview)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        numberList = (1..20).map { NumberData(it) }
+        numberList = (1..1000).map { NumberData(it) }
         sequenceDataList = loadSequenceData()
 
         val currentUser = auth.currentUser

@@ -36,6 +36,9 @@ class Profile : AppCompatActivity() {
 
         emailText = findViewById(R.id.Gmail)
         hectoName = findViewById(R.id.uniqueid)
+        val level =findViewById<TextView>(R.id.tVhectoLevel)
+
+
 
         val logOut = findViewById<TextView>(R.id.btnLogout)
         logOut.setOnClickListener {
@@ -52,11 +55,14 @@ class Profile : AppCompatActivity() {
         if (email != null && safeEmail != null) {
             emailText.text = email
 
-            firestore.collection("User").document(safeEmail).get()
+            firestore.collection("users").document(safeEmail).get()
                 .addOnSuccessListener { document ->
                     if (document != null && document.exists()) {
-                        val userHectoName = document.getString("hectoName")
+                        val userHectoName = document.getString("heptoName")
                         hectoName.text = userHectoName ?: "No HectoName"
+                        val levelNumber = document.getLong("unlockedLevel")?.toInt()
+                        level.text = "👑 ${levelNumber ?: 1}"
+
                     } else {
                         Log.d("ProfileActivity", "No such document in Firestore")
                         hectoName.text = "No HectoName"

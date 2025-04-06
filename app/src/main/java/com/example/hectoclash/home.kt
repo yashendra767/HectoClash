@@ -34,6 +34,11 @@ class home : Fragment() {
         val playOnline = view.findViewById<CardView>(R.id.playOnline)
         val learnHecto = view.findViewById<CardView>(R.id.learnHectoClash)
         dailyPuzzleCard = view.findViewById(R.id.dailyPuzzle)
+        val hectolevel =view.findViewById<CardView>(R.id.solveHectoClash)
+
+        hectolevel.setOnClickListener {
+            startActivity(Intent(requireContext(),Hectolevel::class.java))
+        }
 
         playOnline.setOnClickListener { findRandomOpponent() }
 

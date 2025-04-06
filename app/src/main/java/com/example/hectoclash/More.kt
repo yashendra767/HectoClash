@@ -26,6 +26,14 @@ class More : Fragment() {
             val intent = Intent(requireContext(), Profile::class.java)
             startActivity(intent)
         }
+        val help = view.findViewById<CardView>(R.id.moreHelp)
+        help.setOnClickListener {
+            val url = "http://hectoc.org/"
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = android.net.Uri.parse(url)
+            startActivity(intent)
+
+        }
         return view
     }
 
