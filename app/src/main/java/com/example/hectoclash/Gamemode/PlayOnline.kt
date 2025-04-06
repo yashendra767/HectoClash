@@ -317,10 +317,46 @@ class PlayOnline : AppCompatActivity() {
     private fun startGameInterface(gameId: String) {
         dismissWaitingDialog()
         gameRequestDialog?.dismiss()
-        val intent = Intent(this, GameInterface::class.java)
-        intent.putExtra("gameId", gameId)
-        startActivity(intent)
+
+        database.child("games").child(gameId).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val gameData = snapshot.value as Map<String, Any?>
+
+                    val player1 = gameData["player1"] as? String
+                    val player2 = gameData["player2"] as? String
+                    val player1Name = gameData["player1Name"] as? String
+                    val player2Name = gameData["player2Name"] as? String
+                    val questionMap = gameData["question"] as? Map<String, Any?>
+
+                    val sequence = questionMap?.get("sequence") as? List<Double>
+                    val operatorSequence = questionMap?.get("operator_sequence") as? List<String>
+                    val solution = questionMap?.get("solution") as? Double
+
+                    val intent = Intent(this@PlayOnline, GameInterface::class.java).apply {
+                        putExtra("gameId", gameId)
+                        putExtra("player1", player1)
+                        putExtra("player2", player2)
+                        putExtra("player1Name", player1Name)
+                        putExtra("player2Name", player2Name)
+                        putExtra("sequence", ArrayList(sequence ?: emptyList()))
+                        putExtra("operator_sequence", ArrayList(operatorSequence ?: emptyList()))
+                        putExtra("solution", solution ?: 0.0)
+                    }
+
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(this@PlayOnline, "Game data not found.", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@PlayOnline, "Failed to fetch game data.", Toast.LENGTH_SHORT).show()
+                Log.e("PlayOnline", "Game fetch cancelled: ${error.message}")
+            }
+        })
     }
+
 
     private fun showGameRejectedToast() {
         dismissWaitingDialog()

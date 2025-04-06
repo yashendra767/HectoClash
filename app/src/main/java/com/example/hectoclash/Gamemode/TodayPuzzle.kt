@@ -1,8 +1,8 @@
 package com.example.hectoclash.Gamemode
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.Intent
+import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
@@ -11,19 +11,23 @@ import android.text.InputFilter
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.Gravity
-import android.widget.*
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.example.hectoclash.R
-import com.example.hectoclash.dataclass.GameData
 import com.example.hectoclash.dataclass.HectoQuestion
-import com.google.firebase.database.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.InputStreamReader
-import kotlin.random.Random
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-class GameInterface : AppCompatActivity() {
+class TodayPuzzle : AppCompatActivity() {
 
     // UI Elements
     private lateinit var sequenceTextView: TextView
@@ -37,26 +41,31 @@ class GameInterface : AppCompatActivity() {
     private var correctOperatorSequence = listOf<String>()
     private var userInputSequence = listOf<String>()
     private var timer: CountDownTimer? = null
-    private val gameDuration = 2 * 60 * 1000L // 2 minutes
     private val colors = listOf("#f94144", "#f3722c", "#f8961e", "#f9844a", "#f9c74f")
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_game_interface)
+        enableEdgeToEdge()
+        setContentView(R.layout.activity_today_puzzle)
 
-        // Initialize UI
         initializeViews()
         setupListeners()
+        loadRandomSequence()
+        if (userInputSequence == correctOperatorSequence) {
+            markPuzzleAsDoneToday() // <- Call this
 
-        val gameId = intent.getStringExtra("gameId")
-        if (!gameId.isNullOrEmpty()) {
-            loadGameFromFirebase(gameId)
-        } else {
-            loadRandomSequence()
-            startGameTimer(gameDuration)
         }
+
+
     }
+
+    private fun markPuzzleAsDoneToday() {
+        val prefs = getSharedPreferences("HectoClashPrefs", Context.MODE_PRIVATE)
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        prefs.edit().putString("daily_puzzle_date", today).apply()
+    }
+
+
 
     private fun initializeViews() {
         sequenceTextView = findViewById(R.id.sequence)
@@ -74,7 +83,7 @@ class GameInterface : AppCompatActivity() {
             operatorFields.firstOrNull()?.requestFocus()
         }
 
-        // Operator insertion
+
         val operatorMap = mapOf(
             R.id.cardAdd to "+",
             R.id.cardSubtract to "-",
@@ -83,64 +92,10 @@ class GameInterface : AppCompatActivity() {
         )
 
         operatorMap.forEach { (id, op) ->
-            findViewById<CardView>(id).setOnClickListener { insertOperatorIntoFocusedField(op) }
+            findViewById<CardView>(id).setOnClickListener {
+                insertOperatorIntoFocusedField(op)
+            }
         }
-    }
-
-
-
-
-    private fun loadGameFromFirebase(gameId: String) {
-        val gameRef = FirebaseDatabase.getInstance().reference.child("games").child(gameId)
-        val startTime = System.currentTimeMillis()
-
-        gameRef.child("status").setValue("active")
-        gameRef.child("startTime").setValue(startTime)
-
-        gameRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val game = snapshot.getValue(GameData::class.java)
-
-                if (game != null) {
-                    if (game.status == "active") {
-                        val startTime = game.startTime ?: return
-                        val remainingTime = gameDuration - (System.currentTimeMillis() - startTime)
-
-                        // Prevent game from starting again on repeated trigger
-                        gameRef.removeEventListener(this)
-
-                        if (game.question != null) {
-                            sequenceTextView.text = "Hecto Sequence: ${game.question!!.sequence}"
-                            displayEditableSolution(game.question.solution)
-                            correctOperatorSequence = game.question.operator_sequence
-                            startGameTimer(remainingTime)
-                        }
-                    } else if (game.status == "waiting") {
-                        sequenceTextView.text = "Waiting for opponent to accept..."
-                    }
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@GameInterface, "Failed to load game", Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
-
-
-    private fun startGameTimer(remainingTime: Long) {
-        timer = object : CountDownTimer(remainingTime, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                val minutes = millisUntilFinished / 60000
-                val seconds = (millisUntilFinished % 60000) / 1000
-                timerTextView.text = String.format("Time Left: %02d:%02d", minutes, seconds)
-            }
-
-            override fun onFinish() {
-                timerTextView.text = "Time's Up!"
-                checkSolution()
-            }
-        }.start()
     }
 
     private fun checkSolution() {
@@ -152,21 +107,28 @@ class GameInterface : AppCompatActivity() {
         }
 
         if (userInputSequence == correctOperatorSequence) {
+            markPuzzleAsDoneToday() // ✅ Save completion
             showDialog("✅ Correct!", "You entered the correct operators! 🎉")
         } else {
-            showDialog("❌ Incorrect!", "Correct sequence: ${correctOperatorSequence.joinToString(" ")}")
-        }
+            showDialog("❌ Incorrect!", "Correct sequence: ${correctOperatorSequence.joinToString("")}")
+            }
     }
 
     private fun showDialog(title: String, message: String) {
         AlertDialog.Builder(this)
             .setTitle(title)
             .setMessage(message)
-            .setPositiveButton("OK", null)
+            .setPositiveButton("OK") { dialog, _ ->
+                finish() // 👈 This finishes TodayPuzzle and returns to MainActivity
+            }
+            .setCancelable(false)
             .show()
     }
 
-    private fun loadRandomSequence() {
+
+
+
+        private fun loadRandomSequence() {
         val item = getRandomSequence()
         if (item != null) {
             sequenceTextView.text = "Hecto Sequence: ${item.sequence}"
@@ -245,7 +207,10 @@ class GameInterface : AppCompatActivity() {
             }
 
             try {
-                val method = EditText::class.java.getMethod("setShowSoftInputOnFocus", Boolean::class.javaPrimitiveType)
+                val method = EditText::class.java.getMethod(
+                    "setShowSoftInputOnFocus",
+                    Boolean::class.javaPrimitiveType
+                )
                 method.invoke(this, false)
             } catch (e: Exception) {
                 e.printStackTrace()

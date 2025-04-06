@@ -13,6 +13,11 @@
         android:theme="@style/Theme.HectoClash"
         tools:targetApi="31">
         <activity
+            android:name=".Gamemode.TodayPuzzle"
+            android:exported="false" >
+
+        </activity>
+        <activity
             android:name=".more.Profile"
             android:exported="false" />
         <activity
@@ -45,6 +50,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity
             android:name=".Login.GetStarted"
@@ -57,12 +63,9 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="false">
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
     </application>
 

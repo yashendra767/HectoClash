@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:background="@color/surface_dark"
+    tools:context=".Gamemode.TodayPuzzle">
+
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/img4"
+        android:layout_gravity="center_horizontal"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Daily Puzzle"
+        android:layout_gravity="center_horizontal"
+        android:textSize="24sp"
+        android:fontFamily="@font/actor"
+        android:textStyle="bold"
+        android:paddingBottom="10dp"
+        android:textColor="@android:color/white" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Todays Hecto Sequence"
+        android:layout_gravity="center_horizontal"
+        android:textSize="24sp"
+        android:fontFamily="@font/actor"
+        android:textStyle="bold"
+        android:paddingBottom="10dp"
+        android:textColor="@android:color/white" />
+    <TextView
+        android:id="@+id/sequence"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:layout_gravity="center_horizontal"
+        android:textSize="24sp"
+        android:fontFamily="@font/actor"
+        android:textStyle="bold"
+        android:paddingBottom="10dp"
+        android:textColor="@android:color/white" />
+
+    <LinearLayout
+        android:id="@+id/solutioncontainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="2dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:background="@android:color/transparent"/>
+    <ImageView
+        android:id="@+id/resetbtn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="end"
+        android:layout_marginRight="25dp"
+        android:src="@drawable/reset"/>
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="20dp"
+        android:backgroundTint="@color/black"
+        android:layout_marginTop="100dp"
+        android:layout_marginHorizontal="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardAdd"
+                    android:layout_width="130dp"
+                    android:layout_height="75dp"
+                    android:backgroundTint="@color/surface_dark"
+                    app:cardCornerRadius="16dp"
+                    android:layout_marginLeft="20dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/plus"
+                        android:padding="5dp">
+                    </ImageView>
+
+
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardSubtract"
+                    android:layout_width="130dp"
+                    android:layout_height="75dp"
+                    android:backgroundTint="@color/surface_dark"
+                    android:layout_margin="15dp"
+                    app:cardCornerRadius="16dp"
+                    android:layout_marginLeft="20dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/minus"
+                        android:padding="5dp">
+                    </ImageView>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardMultiply"
+                    android:layout_width="130dp"
+                    android:layout_height="75dp"
+                    android:backgroundTint="@color/surface_dark"
+                    app:cardCornerRadius="16dp"
+                    android:layout_marginLeft="20dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="❌"
+                        android:textSize="45dp"
+                        android:gravity="center"
+                        android:layout_gravity="center"/>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardDivide"
+                    android:layout_width="130dp"
+                    android:layout_height="75dp"
+                    android:backgroundTint="@color/surface_dark"
+                    android:layout_margin="15dp"
+                    app:cardCornerRadius="16dp"
+                    android:layout_marginLeft="20dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/divide"
+                        android:padding="5dp">
+                    </ImageView>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+
+
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnsubmit"
+        app:cardBackgroundColor="@color/blue_primary"
+        app:cardElevation="5dp"
+        android:padding="10dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginHorizontal="10dp"
+        app:cardCornerRadius="10dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:fontFamily="@font/itim"
+            android:layout_margin="5dp"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:gravity="bottom"
+            android:textColor="@color/background_light"
+            android:layout_gravity="center_horizontal">
+        </TextView>
+    </androidx.cardview.widget.CardView>
+
+
+
+</LinearLayout>
