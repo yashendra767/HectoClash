@@ -46,7 +46,7 @@ class PlayOnline : AppCompatActivity() {
         val sharedPref = getSharedPreferences("HectoClashPrefs", Context.MODE_PRIVATE)
         val currentUserName = sharedPref.getString("heptoname", "You")
         val opponentName = sharedPref.getString("opponent_name", "Opponent")
-        val opponentEmail = sharedPref.getString("opponent_email", "opponent_name")
+        val opponentEmail = sharedPref.getString("opponent_email", "opponent_email")
 
         Log.d("PlayOnline", "Current user: $currentUserName, Opponent: $opponentName, OpponentEmail: $opponentEmail")
 

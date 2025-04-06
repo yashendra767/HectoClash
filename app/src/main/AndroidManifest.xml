@@ -2,21 +2,27 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/app_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.HectoClash"
         tools:targetApi="31">
         <activity
+            android:name=".Gamemode.LossResultScreen"
+            android:exported="false" />
+        <activity
+            android:name=".Gamemode.WinResultScreen"
+            android:exported="false" />
+        <activity
             android:name=".Gamemode.TodayPuzzle"
-            android:exported="false" >
-
-        </activity>
+            android:exported="false" />
         <activity
             android:name=".more.Profile"
             android:exported="false" />
@@ -43,6 +49,9 @@
             android:exported="false"
             android:theme="@style/Theme.HectoClash" />
         <activity
+            android:name=".Gamemode.GameInterface"
+            android:exported="false" />
+        <activity
             android:name=".SplashScreen"
             android:exported="true">
             <intent-filter>
@@ -50,7 +59,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".Login.GetStarted"
@@ -59,14 +67,8 @@
             android:name=".Gamemode.PlayOnline"
             android:exported="false" />
         <activity
-            android:name=".Gamemode.GameInterface"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
-            android:exported="false">
-
-
-        </activity>
+            android:exported="false" />
     </application>
 
 </manifest>

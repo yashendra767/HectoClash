@@ -4,23 +4,23 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-04-06T00:00:15.610697300Z">
+        <DropdownSelection timestamp="2025-04-06T08:00:58.556219800Z">
           <Target type="DEFAULT_BOOT">
-            <template>
-              <DeviceId pluginId="FirebaseDirectAccess" type="TEMPLATE" identifier="model_id=b0q/33" />
-            </template>
+            <handle>
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\aayus\.android\avd\Pixel_9_Pro_API_35.avd" />
+            </handle>
           </Target>
         </DropdownSelection>
         <DialogSelection>
           <targets>
             <Target type="DEFAULT_BOOT">
               <handle>
-                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\aayus\.android\avd\Pixel_9_Pro_API_35.avd" />
+                <DeviceId pluginId="PhysicalDevice" identifier="serial=3ac022a4" />
               </handle>
             </Target>
             <Target type="DEFAULT_BOOT">
               <handle>
-                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\aayus\.android\avd\Copy_of_Pixel_9_Pro_API_35.avd" />
+                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\aayus\.android\avd\Pixel_9_Pro_API_35.avd" />
               </handle>
             </Target>
           </targets>

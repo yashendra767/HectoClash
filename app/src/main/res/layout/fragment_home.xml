@@ -150,55 +150,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="5dp"
-                android:id="@+id/gameRooms"
-                android:layout_marginBottom="10dp"
-                app:cardBackgroundColor="@color/surface_dark"
-                app:cardElevation="5dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-                    <ImageView
-                        android:layout_width="120dp"
-                        android:layout_height="120dp"
-                        android:padding="5dp"
-                        android:src="@drawable/multiplayer">
-                    </ImageView>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginTop="3dp"
-                            android:fontFamily="@font/actor"
-                            android:textSize="20sp"
-                            android:textColor="@color/surface_light"
-                            android:text="Custom Game Rooms">
-                        </TextView>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:fontFamily="@font/actor"
-                            android:textSize="15sp"
-                            android:textColor="@color/surface_light"
-                            android:text="Multiplayer">
-                        </TextView>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="5dp"
                 android:id="@+id/learnHectoClash"
                 android:layout_marginBottom="10dp"
                 app:cardBackgroundColor="@color/surface_dark"

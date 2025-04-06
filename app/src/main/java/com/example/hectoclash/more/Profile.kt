@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.hectoclash.Login.CreateAccount
+import com.example.hectoclash.Login.GetStarted
 import com.example.hectoclash.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -37,13 +38,14 @@ class Profile : AppCompatActivity() {
         emailText = findViewById(R.id.Gmail)
         hectoName = findViewById(R.id.uniqueid)
         val level =findViewById<TextView>(R.id.tVhectoLevel)
+        val score =findViewById<TextView>(R.id.tVhectoScore)
 
 
 
         val logOut = findViewById<TextView>(R.id.btnLogout)
         logOut.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
-            val intent = Intent(this@Profile, CreateAccount::class.java)
+            val intent = Intent(this@Profile, GetStarted::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
             finish()
@@ -60,6 +62,9 @@ class Profile : AppCompatActivity() {
                     if (document != null && document.exists()) {
                         val userHectoName = document.getString("heptoName")
                         hectoName.text = userHectoName ?: "No HectoName"
+                        val scoretext=document.getLong("HectoScore")?.toInt()
+                        score.text ="👑 ${scoretext ?:0}"
+
                         val levelNumber = document.getLong("unlockedLevel")?.toInt()
                         level.text = "👑 ${levelNumber ?: 1}"
 

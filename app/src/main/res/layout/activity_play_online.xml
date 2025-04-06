@@ -42,7 +42,7 @@
             <ImageView
                 android:layout_width="90dp"
                 android:layout_height="90dp"
-                android:src="@drawable/img"
+                android:src="@drawable/avatar"
                 android:layout_marginTop="10dp"
                 android:layout_gravity="center_horizontal"/>
 
@@ -80,7 +80,7 @@
             <ImageView
                 android:layout_width="90dp"
                 android:layout_height="90dp"
-                android:src="@drawable/img"
+                android:src="@drawable/avatar1"
                 android:layout_marginTop="10dp"
                 android:layout_gravity="center_horizontal"/>
 

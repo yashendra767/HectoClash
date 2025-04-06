@@ -2,99 +2,95 @@ package com.example.hectoclash
 
 import android.graphics.Color
 import android.os.Bundle
+import android.view.*
+import android.widget.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.TextView
-import android.widget.Toast
-
-
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.hectoclash.dataclass.LeaderBoard
+import com.google.firebase.firestore.FirebaseFirestore
 
 class Leaderboard : Fragment() {
 
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var spinner: Spinner
+    private lateinit var rvLeaderboard: RecyclerView
+    private lateinit var leaderboardAdapter: LeaderBoardAdapter
+    private val db = FirebaseFirestore.getInstance()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View? {
+        savedInstanceState: Bundle?
+    ): View {
+        val view = inflater.inflate(R.layout.fragment_leaderboard, container, false)
 
-        return inflater.inflate(R.layout.fragment_leaderboard, container, false)
+        spinner = view.findViewById(R.id.spinner)
+        rvLeaderboard = view.findViewById(R.id.rvLeaderboard)
+        leaderboardAdapter = LeaderBoardAdapter(emptyList(), requireContext())
+
+        rvLeaderboard.layoutManager = LinearLayoutManager(requireContext())
+        rvLeaderboard.adapter = leaderboardAdapter
+
+        setupSpinner()
+
+        return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val spinner: Spinner = view.findViewById(R.id.spinner)
-
+    private fun setupSpinner() {
         val items = listOf("Select an option", "HectoScore", "HectoLevel")
 
         val adapter = object : ArrayAdapter<String>(
             requireContext(),
-            R.layout.spinner_item_white, // custom layout for selected item
+            R.layout.spinner_item_white,
             items
         ) {
-            override fun isEnabled(position: Int): Boolean {
-                return position != 0 // disable the hint item
-            }
-
+            override fun isEnabled(position: Int) = position != 0
             override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
                 val view = super.getDropDownView(position, convertView, parent) as TextView
-                view.setTextColor(Color.WHITE)
-                if (position == 0) {
-                    view.setTextColor(Color.GRAY)
-                }
+                view.setTextColor(if (position == 0) Color.GRAY else Color.WHITE)
                 return view
             }
         }
 
         adapter.setDropDownViewResource(R.layout.spinner_item_white)
         spinner.adapter = adapter
-
-        spinner.setSelection(0, false) // show hint initially
+        spinner.setSelection(0, false)
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                if (position == 0) {
-                    // Do nothing or optionally show a message
-                    spinner.setSelection(0) // force it to stay on hint
-                } else {
-                    val selectedItem = parent.getItemAtPosition(position).toString()
-                    Toast.makeText(requireContext(), "Selected: $selectedItem", Toast.LENGTH_SHORT).show()
+                if (position > 0) {
+                    val selected = parent.getItemAtPosition(position).toString()
+                    fetchLeaderboardData(selected)
                 }
             }
 
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-                TODO("Not yet implemented")
-            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
     }
 
-    companion object {
+    private fun fetchLeaderboardData(category: String) {
+        val field = when (category) {
+            "HectoScore" -> "HectoScore"
+            "HectoLevel" -> "unlockedLevel"
+            else -> return
+        }
 
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            Leaderboard().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+        db.collection("users")
+            .orderBy(field, com.google.firebase.firestore.Query.Direction.DESCENDING)
+            .get()
+            .addOnSuccessListener { documents ->
+                val leaderboardList = mutableListOf<LeaderBoard>()
+
+                for (doc in documents) {
+                    val name = doc.getString("heptoName") ?: "Unknown"
+                    val value = doc.getLong(field)?.toInt() ?: 0
+                    leaderboardList.add(LeaderBoard(name, value))
                 }
+
+                leaderboardAdapter.updateData(leaderboardList)
+            }
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "Error fetching data", Toast.LENGTH_SHORT).show()
             }
     }
 }

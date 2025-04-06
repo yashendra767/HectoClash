@@ -34,10 +34,10 @@ class home : Fragment() {
         val playOnline = view.findViewById<CardView>(R.id.playOnline)
         val learnHecto = view.findViewById<CardView>(R.id.learnHectoClash)
         dailyPuzzleCard = view.findViewById(R.id.dailyPuzzle)
-        val hectolevel =view.findViewById<CardView>(R.id.solveHectoClash)
+        val hectolevel = view.findViewById<CardView>(R.id.solveHectoClash)
 
         hectolevel.setOnClickListener {
-            startActivity(Intent(requireContext(),Hectolevel::class.java))
+            startActivity(Intent(requireContext(), Hectolevel::class.java))
         }
 
         playOnline.setOnClickListener { findRandomOpponent() }
@@ -76,40 +76,52 @@ class home : Fragment() {
         if (hasCompletedTodayPuzzle()) {
             dailyPuzzleCard.alpha = 0.3f
         } else {
-            dailyPuzzleCard.alpha=1f
-            }
+            dailyPuzzleCard.alpha = 1f
+        }
     }
 
     private fun findRandomOpponent() {
-        val currentUserEmail = auth.currentUser?.email?.replace(".", ",") ?: return
+        val currentUserEmail = auth.currentUser?.email ?: return
 
         firestore.collection("users").get()
             .addOnSuccessListener { result ->
-                val otherUsers = result.documents.filter { it.id != currentUserEmail }
+                val otherUsers = result.documents.filter { it.id != currentUserEmail.replace(".", ",") }
 
                 if (otherUsers.isNotEmpty()) {
                     val randomUser = otherUsers.random()
+                    val opponentEmail = randomUser.id.replace(",", ".") // Get email from document ID
                     val opponentName = randomUser.getString("heptoName")
 
-                    if (!opponentName.isNullOrEmpty()) {
-                        saveOpponentToSharedPrefs(opponentName)
+                    if (!opponentEmail.isNullOrEmpty() && !opponentName.isNullOrEmpty()) {
+                        saveOpponentToSharedPrefs(opponentName, opponentEmail) // Pass email
                         startActivity(Intent(requireContext(), PlayOnline::class.java))
                     } else {
-                        Toast.makeText(requireContext(), "Opponent has no username.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            "Opponent data is incomplete.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 } else {
                     Toast.makeText(requireContext(), "No other users found!", Toast.LENGTH_SHORT).show()
                 }
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Failed to get users: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Failed to get users: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
                 Log.e("HomeFragment", "Firestore error: ", e)
             }
     }
 
-    private fun saveOpponentToSharedPrefs(opponentName: String) {
+    private fun saveOpponentToSharedPrefs(opponentName: String, opponentEmail: String) {
         val prefs = requireContext().getSharedPreferences("HectoClashPrefs", Context.MODE_PRIVATE)
-        prefs.edit().putString("opponent_name", opponentName).apply()
-        Log.d("SharedPrefs", "Opponent $opponentName stored for game.")
+        val editor = prefs.edit()
+        editor.putString("opponent_name", opponentName)
+        editor.putString("opponent_email", opponentEmail) // Save email
+        editor.apply()
+        Log.d("SharedPrefs", "Opponent $opponentName ($opponentEmail) stored for game.")
     }
 }

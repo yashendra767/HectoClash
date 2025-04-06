@@ -34,7 +34,7 @@
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:background="@drawable/border"
-            android:src="@drawable/baseline_photo_camera_24"/>
+            android:src="@drawable/baseline_person_24"/>
 
         <EditText
             android:layout_width="match_parent"

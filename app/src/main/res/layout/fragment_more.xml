@@ -96,45 +96,7 @@
 
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_marginTop="10dp"
-                app:cardElevation="5dp"
-                android:id="@+id/moreFriends"
-                app:cardCornerRadius="7dp"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                app:cardBackgroundColor="@color/surface_dark">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:src="@drawable/friends"
-                        android:layout_margin="2dp"
-                        android:padding="9dp"
-                        app:civ_border_width="2dp">
-
-                    </de.hdodenhof.circleimageview.CircleImageView>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="10dp"
-                        android:text="Friends"
-                        android:fontFamily="@font/actor"
-                        android:textColor="@color/surface_light"
-                        android:textSize="23sp">
-                    </TextView>
-
-                </LinearLayout>
-
-
-            </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"

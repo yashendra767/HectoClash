@@ -95,7 +95,7 @@ class GetStarted : AppCompatActivity() {
                 if (task.isSuccessful) {
                     val user = auth.currentUser
                     user?.let {
-                        val userEmail = it.email
+                        val userEmail = it.email.toString().replace(".",",")
                         val userName = acct.displayName // Google account's display name
                         if (userEmail != null && userName != null) {
                             saveUserData(userEmail, userName)
@@ -125,7 +125,7 @@ class GetStarted : AppCompatActivity() {
 
         // Save to Firestore (email and name)
         val firestoreUserData = hashMapOf(
-            "name" to userName
+            "heptoName" to userName
         )
 
         firestore.collection("users").document(userEmail)

@@ -45,10 +45,9 @@
             app:cardCornerRadius="20dp"
             android:layout_margin="15dp">
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/img"
-                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/avatar"
                 android:layout_gravity="center_horizontal"/>
 
         </androidx.cardview.widget.CardView>
@@ -70,8 +69,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/img"
-                android:layout_marginTop="10dp"
+                android:src="@drawable/avatar1"
                 android:layout_gravity="center_horizontal"/>
 
 

@@ -17,6 +17,7 @@ import androidx.cardview.widget.CardView
 import com.example.hectoclash.R
 import com.example.hectoclash.dataclass.GameData
 import com.example.hectoclash.dataclass.HectoQuestion
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -24,6 +25,9 @@ import java.io.InputStreamReader
 import kotlin.random.Random
 
 class GameInterface : AppCompatActivity() {
+
+    private lateinit var currentUserEmail: String
+    private var isFirstPlayer: Boolean = false
 
     // UI Elements
     private lateinit var sequenceTextView: TextView
@@ -59,15 +63,134 @@ class GameInterface : AppCompatActivity() {
         // Initialize UI
         initializeViews()
         setupListeners()
+        var auth =FirebaseAuth.getInstance()
+        currentUserEmail =auth.currentUser?.email.toString().replace(".",",")
 
         gameId = intent.getStringExtra("gameId")
+        gameRef= gameId?.let { FirebaseDatabase.getInstance().getReference("games").child(it) }!!
         if (!gameId.isNullOrEmpty()) {
             loadGameFromFirebase(gameId!!)
+            setupRealtimeListeners()
         } else {
             loadRandomSequence()
             startGameTimer(gameDuration)
         }
+
+
+
     }
+
+    private fun setupRealtimeListeners() {
+        // First, determine if the current user is player 1
+        gameRef.child("player1").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val player1Email = snapshot.getValue(String::class.java)
+                isFirstPlayer = (player1Email == currentUserEmail)
+
+                // Now set up listeners based on player role
+                setupPlayerSolutionListener()
+                setupWinnerListener()
+                setupGameStatusListener()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@GameInterface, "Failed to identify player role", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun setupPlayerSolutionListener() {
+        // Listen to opponent's solution only
+        val opponentSolutionKey = if (isFirstPlayer) "player2Solution" else "player1Solution"
+
+        gameRef.child(opponentSolutionKey).addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val solution = snapshot.getValue(object : GenericTypeIndicator<List<String>>() {})
+                if (solution != null) {
+                    updateOpponentSolution(solution)
+                } else {
+                    resetOpponentSolution()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@GameInterface, "Failed to load opponent's solution", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun setupWinnerListener() {
+        gameRef.child("winner").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val winnerEmail = snapshot.getValue(String::class.java)
+                if (!winnerEmail.isNullOrEmpty()) {
+                    timer?.cancel()
+                    if (winnerEmail == currentUserEmail) {
+                        showResultDialog("✅ Correct!", "You solved it first!") {
+                            startActivity(Intent(this@GameInterface, WinResultScreen::class.java))
+                            finish()
+                        }
+                    } else {
+                        showResultDialog(
+                            "❌ Incorrect!",
+                            "Opponent solved it first. Correct sequence: ${correctOperatorSequence.joinToString(" ")}"
+                        ) {
+                            startActivity(Intent(this@GameInterface, LossResultScreen::class.java))
+                            finish()
+                        }
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@GameInterface, "Failed to load winner data", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun setupGameStatusListener() {
+        gameRef.child("status").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val status = snapshot.getValue(String::class.java)
+                if (status == "finished") {
+                    timer?.cancel()
+                    showResultDialog(
+                        "⏱️ Time's Up!",
+                        "No one solved it in time. Correct sequence: ${correctOperatorSequence.joinToString(" ")}"
+                    ) {
+                        finish()
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@GameInterface, "Failed to load game status", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+
+    private fun updateOpponentSolution(solution: List<String>) {
+        // You'll need to visually represent the opponent's solution.
+        // This could involve displaying a separate read-only view or updating the existing one with different styling.
+        // For now, let's just log it.
+        println("Opponent's Solution: $solution")
+    }
+
+    private fun resetOpponentSolution() {
+        println("Opponent's solution reset")
+        // Update UI to reflect the reset of the opponent's solution
+    }
+
+    private fun showResultDialog(title: String, message: String, onDismiss: () -> Unit) {
+        AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("OK") { _, _ -> onDismiss() }
+            .setCancelable(false)
+            .show()
+    }
+
 
     private fun initializeViews() {
         sequenceTextView = findViewById(R.id.sequence)
@@ -159,24 +282,61 @@ class GameInterface : AppCompatActivity() {
         userInputSequence = operatorFields.map { it.text.toString().trim() }
 
         if (userInputSequence.any { it.isEmpty() }) {
-            showDialog("❌ Incomplete!", "Please fill in all operator fields.")
+            AlertDialog.Builder(this)
+                .setTitle("❌ Incomplete!")
+                .setMessage("Please fill in all operator fields.")
+                .setPositiveButton("OK", null)
+                .show()
             return
         }
 
-        if (userInputSequence == correctOperatorSequence) {
-            showDialog("✅ Correct!", "You entered the correct operators! 🎉")
-        } else {
-            showDialog("❌ Incorrect!", "Correct sequence: ${correctOperatorSequence.joinToString(" ")}")
-        }
+        // Check if already solved (winner exists)
+        gameRef.child("winner").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    // Someone already won
+                    Toast.makeText(this@GameInterface, "Game already ended!", Toast.LENGTH_SHORT).show()
+                    return
+                }
+
+                val isCorrect = userInputSequence == correctOperatorSequence
+
+                // Save player's solution
+                val solutionKey = if (isFirstPlayer) "player1Solution" else "player2Solution"
+                gameRef.child(solutionKey).setValue(userInputSequence)
+
+                if (isCorrect) {
+                    // Mark current user as winner
+                    gameRef.child("winner").setValue(currentUserEmail)
+
+                    // Show win dialog
+                    AlertDialog.Builder(this@GameInterface)
+                        .setTitle("✅ Correct!")
+                        .setMessage("You solved it first! 🎉")
+                        .setPositiveButton("OK") { _, _ ->
+                            startActivity(Intent(this@GameInterface, WinResultScreen::class.java))
+                            finish()
+                        }
+                        .setCancelable(false)
+                        .show()
+                } else {
+                    // Show incorrect dialog (but don't mark winner)
+                    AlertDialog.Builder(this@GameInterface)
+                        .setTitle("❌ Incorrect!")
+                        .setMessage("Correct sequence: ${correctOperatorSequence.joinToString(" ")}")
+                        .setPositiveButton("OK", null)
+                        .show()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@GameInterface, "Error checking winner", Toast.LENGTH_SHORT).show()
+                }
+        })
     }
 
-    private fun showDialog(title: String, message: String) {
-        AlertDialog.Builder(this)
-            .setTitle(title)
-            .setMessage(message)
-            .setPositiveButton("OK", null)
-            .show()
-    }
+
+
 
     private fun loadRandomSequence() {
         val item = getRandomSequence()

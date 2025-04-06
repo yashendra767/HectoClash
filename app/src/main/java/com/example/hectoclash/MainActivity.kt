@@ -9,6 +9,7 @@ import android.content.Intent
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import com.example.hectoclash.Gamemode.PlayOnline
 import com.example.hectoclash.more.Profile
 
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -32,6 +33,11 @@ class MainActivity : AppCompatActivity() {
                 R.id.item3 -> replaceTheFragment(More())
             }
             true
+        }
+
+        val playButton = findViewById<CardView>(R.id.btnPlay)
+        playButton.setOnClickListener {
+            startActivity(Intent(this, PlayOnline::class.java))
         }
         val profileBtn = findViewById<CardView>(R.id.btnProfile)
         profileBtn.setOnClickListener{
