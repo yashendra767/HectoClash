@@ -99,11 +99,20 @@ Students often struggle to improve their mental math speed and accuracy due to:
 | **Platform** | Android |
 
 ---
+## 🔨 Future Enhancements
 
-## 📸 Screenshots
-
-> *(Add your app screenshots here — dashboard, duel screen, leaderboard, etc.)*
+- 🎙️ **Voice-based challenges** — make problem-solving more interactive.  
+- 🌍 **Global tournaments & team duels** — compete with players worldwide.  
+- 🤖 **AI-driven adaptive difficulty** — adjust difficulty based on user performance.  
+- 💻 **Cross-platform support (iOS + Web)** — reach a wider audience.  
 
 ---
+
+## 📬 Contact
+
+**For queries or collaborations:**  
+📧 **aryan180906@gmail.com**  
+💻 [**LinkedIn – Aryan Sharma**].(https://www.linkedin.com/in/aryan-sharma-26276131a/)
+
 
 
